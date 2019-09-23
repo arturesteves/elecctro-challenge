@@ -3,10 +3,13 @@
   "version": "0.1.0",
   "description": "Elecctro Back-end and Front-end Challenge",
   "main": "index.js",
-  "dependencies": {},
+  "dependencies": {
+    "@hapi/hapi": "^18.4.0"
+  },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node server/server.js"
   },
   "repository": {
     "type": "git",
