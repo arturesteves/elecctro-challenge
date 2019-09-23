@@ -19,7 +19,7 @@ const server = Hapi.server({
 });
 
 const Cache = server.cache({segment: 'todo_list', expiresIn: 1000 * 5});
-const cacheSegmenet = 'todos';
+const cacheSegment = 'todo_list';
 
 let nextTodoId = 1;
 
@@ -41,11 +41,12 @@ server.route({
       console.log(`New Todo Item: ${ JSON.stringify(newTodoItem) }`);
 
       const key = {
-        segment: cacheSegmenet,
+        segment: cacheSegment,
         id: newTodoItem.id
       };
 
-      await Cache.set(key, newTodoItem, 5000);
+      console.log('key', key);
+      await Cache.set(key, newTodoItem, 50000);
       console.log('Todo Item saved');
 
       nextTodoId++;
