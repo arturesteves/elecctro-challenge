@@ -66,15 +66,46 @@ server.route({
       const { filter = 'ALL', orderBy = 'DATE_ADDED' } = request.query;
       console.log(`Query params received ${JSON.stringify(request.query)}`);
 
+      const todoList = [];
+
       const key = {
-        segment: cacheSegmenet,
-        id: newTodoItem.id
+        segment: cacheSegment,
       };
 
-      const cachedTodoItem = await Cache.get(key);
+      for(let i = 1; i < nextTodoId; i++) {
+      	key.id = i.toString();
+				const item = await Cache.get(key);
+				todoList.push(item);
+			}
 
+      console.log('Temp List', todoList);
 
-      return [];
+      // filter
+			if (filter !== 'ALL') {
+				console.log('Not ALL');
+				for (let i = todoList.length - 1; i >= 0; i--) {
+					if (todoList[i].state === filter) {
+						todoList.splice(i, 1);
+					}
+				}
+			}
+
+			// sort
+			if(orderBy === 'DESCRIPTION') {
+				todoList.sort((a, b) => {
+					if(a.description < b.description) return -1;
+					if(a.description > b.description) return 1;
+					return 0;
+				});
+			} else {
+				todoList.sort((a, b) => {
+					if(a.dateAdded < b.dateAdded) return -1;
+					if(a.dateAdded > b.dateAdded) return 1;
+					return 0;
+				});
+			}
+
+      return todoList;
     }catch(e){
       console.log(e);
       return e;
