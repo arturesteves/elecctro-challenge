@@ -1,0 +1,20 @@
+{
+  "name": "elecctro-challenge",
+  "version": "0.1.0",
+  "description": "Elecctro Back-end and Front-end Challenge",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arturesteves/elecctro-challenge.git"
+  },
+  "author": "artur",
+  "bugs": {
+    "url": "https://github.com/arturesteves/elecctro-challenge/issues"
+  },
+  "homepage": "https://github.com/arturesteves/elecctro-challenge#readme"
+}
