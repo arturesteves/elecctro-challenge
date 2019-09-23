@@ -21,6 +21,8 @@ const server = Hapi.server({
 const Cache = server.cache({segment: 'todo_list', expiresIn: 1000 * 5});
 const cacheSegmenet = 'todos';
 
+let nextTodoId = 1;
+
 server.route({
   method: 'PUT',
   path: '/todos',
@@ -31,7 +33,7 @@ server.route({
       console.log('description', description);
 
       const newTodoItem = {
-        id: generateRandomUniqueIdentifier().toString(),
+        id: nextTodoId.toString(),
         state: 'INCOMPLETE',
         description,
         dateAdded: new Date().toISOString()
@@ -46,6 +48,7 @@ server.route({
       await Cache.set(key, newTodoItem, 5000);
       console.log('Todo Item saved');
 
+      nextTodoId++;
       return newTodoItem;
     }catch(e){
       console.log(e);
@@ -54,9 +57,29 @@ server.route({
   }
 });
 
-const generateRandomUniqueIdentifier = () => {
-  return Math.floor(Math.random() * 10000) + 1;
-};
+server.route({
+  method: 'GET',
+  path: '/todos',
+  handler: async (request, h) => {
+    try {
+      const { filter = 'ALL', orderBy = 'DATE_ADDED' } = request.query;
+      console.log(`Query params received ${JSON.stringify(request.query)}`);
+
+      const key = {
+        segment: cacheSegmenet,
+        id: newTodoItem.id
+      };
+
+      const cachedTodoItem = await Cache.get(key);
+
+
+      return [];
+    }catch(e){
+      console.log(e);
+      return e;
+    }
+  }
+});
 
 const start = async function () {
 
