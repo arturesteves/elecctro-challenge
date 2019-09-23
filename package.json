@@ -4,6 +4,8 @@
   "description": "Elecctro Back-end and Front-end Challenge",
   "main": "index.js",
   "dependencies": {
+    "@hapi/catbox": "^10.2.3",
+    "@hapi/catbox-memory": "^4.1.1",
     "@hapi/hapi": "^18.4.0"
   },
   "devDependencies": {},
