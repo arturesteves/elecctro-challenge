@@ -78,7 +78,15 @@ server.route({
   handler: async (request, h) => {
     try {
       const { filter = 'ALL', orderBy = 'DATE_ADDED' } = request.query;
-      console.log(`Query params received ${JSON.stringify(request.query)}`);
+
+      const schema = await validateSchema(Joi.object({
+				filter: Joi.string().valid('ALL','COMPLETE', 'INCOMPLETE'),
+				orderBy: Joi.string().valid('DESCRIPTION','DATE_ADDED'),
+			}), {filter, orderBy});
+
+      if(schema.errors) {
+				return schema.errors;
+			}
 
       const todoList = [];
 
@@ -97,17 +105,17 @@ server.route({
       console.log('Temp List', todoList);
 
       // filter
-			if (filter !== 'ALL') {
+			if (schema.filter !== 'ALL') {
 				console.log('Not ALL');
 				for (let i = todoList.length - 1; i >= 0; i--) {
-					if (todoList[i].state === filter) {
+					if (todoList[i].state === schema.filter) {
 						todoList.splice(i, 1);
 					}
 				}
 			}
 
 			// sort
-			if(orderBy === 'DESCRIPTION') {
+			if(schema.orderBy === 'DESCRIPTION') {
 				todoList.sort((a, b) => {
 					if(a.description < b.description) return -1;
 					if(a.description > b.description) return 1;
