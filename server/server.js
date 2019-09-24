@@ -113,6 +113,34 @@ server.route({
   }
 });
 
+server.route({
+	method: 'DELETE',
+	path: '/todos/{id}',
+	handler: async (request, h) => {
+		try {
+			const params = request.params;
+			console.log('params', params);
+			const { id} = params;
+			console.log('id,', id);
+
+			const key = {
+				segment: cacheSegment,
+				id: id.toString()
+			};
+
+			const item = await Cache.get(key);
+			if(item == null) {
+				return h.response('Todo Item Not Found').code(404);
+			}
+
+
+		}catch(e){
+			console.log(e);
+			return e;
+		}
+	}
+});
+
 const start = async function () {
 
   try {
