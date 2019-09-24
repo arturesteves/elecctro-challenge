@@ -117,7 +117,7 @@ server.route({
 
 server.route({
 	method: 'DELETE',
-	path: '/todos/{id}',
+	path: '/todo/{id}',
 	handler: async (request, h) => {
 		try {
 			const params = request.params;
