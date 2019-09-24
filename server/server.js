@@ -142,6 +142,47 @@ server.route({
 	}
 });
 
+server.route({
+	method: 'PATCH',
+	path: '/todo/{id}',
+	handler: async (request, h) => {
+		try {
+			const { id } = request.params;
+			const { state, description } = request.payload;
+
+			const key = {
+				segment: cacheSegment,
+				id: id.toString()
+			};
+
+			const item = await Cache.get(key);
+			if(item == null) {
+				return h.response('Todo Item Not Found').code(404);
+			}
+			if(item.state === 'COMPLETE') {
+				return h.response('Todo Item Already Completed').code(400);
+			}
+
+			const updatedItem = {...item};
+
+			if(typeof state !== "undefined") {
+				updatedItem.state = state;
+			}
+			if(typeof description !== "undefined") {
+				updatedItem.description = description;
+			}
+
+			await Cache.set(key, updatedItem, 50000);
+			console.log('Todo Item updated');
+
+			return updatedItem;
+		}catch(e){
+			console.log(e);
+			return e;
+		}
+	}
+});
+
 const start = async function () {
 
   try {
