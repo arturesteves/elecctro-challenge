@@ -75,7 +75,9 @@ server.route({
       for(let i = 1; i < nextTodoId; i++) {
       	key.id = i.toString();
 				const item = await Cache.get(key);
-				todoList.push(item);
+				if(item != null) {
+					todoList.push(item);
+				}
 			}
 
       console.log('Temp List', todoList);
