@@ -1,6 +1,6 @@
 const Hapi = require('@hapi/hapi');
-const listItem = require('./handlers/listItems');
 const CatboxMemory = require('@hapi/catbox-memory');
+const Joi = require('@hapi/joi');
 
 const server = Hapi.server({
   port: 3000,
@@ -22,6 +22,20 @@ const Cache = server.cache({segment: 'todo_list', expiresIn: 1000 * 5});
 const cacheSegment = 'todo_list';
 
 let nextTodoId = 1;
+
+const validateSchema = async (schema, object) => {
+	try{
+			await schema.validateAsync(object, {abortEarly: false});
+			return object;
+	}catch (err) {
+		const errors = err.details;
+		const messages = [];
+		for(let e of errors) {
+			messages.push(e.message);
+		}
+		return {errors: messages};
+	}
+};
 
 server.route({
   method: 'PUT',
