@@ -77,12 +77,12 @@ server.route({
   path: '/todos',
   handler: async (request, h) => {
     try {
-      const { filter = 'ALL', orderBy = 'DATE_ADDED' } = request.query;
+      const { filter = 'ALL', orderBy = 'DATE_ADDED', ...remainingFields } = request.query;
 
       const schema = await validateSchema(Joi.object({
 				filter: Joi.string().valid('ALL','COMPLETE', 'INCOMPLETE'),
 				orderBy: Joi.string().valid('DESCRIPTION','DATE_ADDED'),
-			}), {filter, orderBy});
+			}), {filter, orderBy, ...remainingFields});
 
       if(schema.errors) {
 				return schema.errors;
