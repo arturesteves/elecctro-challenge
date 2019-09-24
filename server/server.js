@@ -42,9 +42,15 @@ server.route({
   path: '/todos',
   handler: async (request, h) => {
     try {
-      const payload = request.payload;
-      const { description } = payload;
-      console.log('description', description);
+      const { description, ...remainingProperties } = request.payload;
+
+      const schema = await validateSchema(Joi.object({
+				description: Joi.string().trim().required()
+			}), { description, ...remainingProperties });
+
+			if(schema.errors) {
+				return schema.errors;
+			}
 
       const newTodoItem = {
         id: nextTodoId.toString(),
@@ -52,14 +58,12 @@ server.route({
         description,
         dateAdded: new Date().toISOString()
       };
-      console.log(`New Todo Item: ${ JSON.stringify(newTodoItem) }`);
 
       const key = {
         segment: cacheSegment,
         id: newTodoItem.id
       };
 
-      console.log('key', key);
       await Cache.set(key, newTodoItem, 50000);
       console.log('Todo Item saved');
 
