@@ -119,9 +119,7 @@ server.route({
 	handler: async (request, h) => {
 		try {
 			const params = request.params;
-			console.log('params', params);
 			const { id} = params;
-			console.log('id,', id);
 
 			const key = {
 				segment: cacheSegment,
@@ -133,7 +131,8 @@ server.route({
 				return h.response('Todo Item Not Found').code(404);
 			}
 
-
+			await Cache.drop(key);
+			return '';
 		}catch(e){
 			console.log(e);
 			return e;
