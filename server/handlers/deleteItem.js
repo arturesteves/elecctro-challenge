@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 const TodoItem = require("../TodoItem");
-const { validateSchema } = require("../utils");
+const { validateSchema, on } = require("../utils");
 
 const handler = async (request, h, db) => {
 	try {
@@ -14,7 +14,10 @@ const handler = async (request, h, db) => {
 
 		try {
 			const todoItem = new TodoItem({ id: schema.id }, db);
-			const result = await todoItem.delete();
+			const [ error, result ] = await on(todoItem.delete());
+			if (error) {
+				return h.response({ error: error.message }).code(404);
+			}
 
 			if (result == null) {
 				return h.response('Todo Item Not Found').code(404);

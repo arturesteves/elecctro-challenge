@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 const TodoItem = require("../TodoItem");
-const { validateSchema } = require("../utils");
+const { validateSchema, on } = require("../utils");
 
 const handler = async (request, h, db) => {
 	try {
@@ -13,7 +13,11 @@ const handler = async (request, h, db) => {
 			return { errors: schema.errors };
 		}
 
-		const todoList = await TodoItem.getAll(db);
+		const [ error, todoList ] = await on(TodoItem.getAll(db));
+		if (error) {
+			return h.response({ error: error.message }).code(404);
+		}
+
 		// filter
 		if (schema.filter !== 'ALL') {
 			for (let i = todoList.length - 1; i >= 0; i--) {

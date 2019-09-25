@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 const TodoItem = require("../TodoItem");
-const { validateSchema } = require("../utils");
+const { validateSchema, on } = require("../utils");
 
 const handler = async (request, h, db) => {
 	try {
@@ -18,8 +18,10 @@ const handler = async (request, h, db) => {
 		};
 
 		const todoItem = new TodoItem(item, db);
-		await todoItem.add();
-
+		const [ error, ] = await on(todoItem.add());
+		if (error) {
+			return h.response({ error: error.message }).code(404);
+		}
 		console.log('Todo Item saved');
 
 		return todoItem.toObject();

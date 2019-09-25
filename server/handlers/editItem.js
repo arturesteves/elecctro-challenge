@@ -1,6 +1,6 @@
 const Joi = require('@hapi/joi');
 const TodoItem = require("../TodoItem");
-const { validateSchema, joinSchemas } = require("../utils");
+const { validateSchema, joinSchemas, on } = require("../utils");
 
 const handler = async (request, h, db) => {
 	try {
@@ -26,12 +26,13 @@ const handler = async (request, h, db) => {
 		}
 
 		const todoItem = new TodoItem({ id: schema.id }, db);
-		const result = await todoItem.getInformationFromDB();
-
+		const [ error, result ] = await on(todoItem.getInformationFromDB());
+		if (error) {
+			return h.response({ error: error.message }).code(404);
+		}
 		if (result == null) {
 			return h.response('Todo Item Not Found').code(404);
 		}
-
 		if (todoItem.state === 'COMPLETE') {
 			return h.response('Todo Item Already Completed').code(400);
 		}
