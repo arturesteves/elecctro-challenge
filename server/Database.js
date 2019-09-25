@@ -64,7 +64,9 @@ class Database {
 
 		for (let i = 1; i < this.nextTodoId; i++) {
 			const item = await this.cache.get(i.toString());
-			list.push(item);
+			if(item != null) {
+				list.push(item);
+			}
 		}
 
 		return list;
