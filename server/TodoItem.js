@@ -56,10 +56,11 @@ class TodoItem {
 }
 
 TodoItem.validations = {
-	id: Joi.number().positive().required(),
-	description: Joi.string().trim().required(),
-	filter: Joi.string().valid('ALL', 'COMPLETE', 'INCOMPLETE').empty(['', null]).default('ALL'),
-	orderBy: Joi.string().valid('DESCRIPTION', 'DATE_ADDED').empty(['', null]).default('DESCRIPTION'),
+	id: Joi.string(),
+	description: Joi.string().trim(),
+	filter: Joi.string().valid('ALL', 'COMPLETE', 'INCOMPLETE').empty([ '', null ]).default('ALL'),
+	orderBy: Joi.string().valid('DESCRIPTION', 'DATE_ADDED').empty([ '', null ]).default('DESCRIPTION'),
+	state: Joi.string().valid('COMPLETE', 'INCOMPLETE'),
 };
 
 module.exports = TodoItem;
