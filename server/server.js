@@ -1,6 +1,7 @@
 const Hapi = require('@hapi/hapi');
 const Joi = require('@hapi/joi');
 const Database = require("./Database");
+const TodoItem = require("./TodoItem");
 
 const server = Hapi.server({
 	port: 3000,
@@ -45,10 +46,12 @@ server.route({
 				dateAdded: new Date().toISOString()
 			};
 
-			const itemAdded = await db.add(item);
+			const todoItem = new TodoItem(item, db);
+			await todoItem.persist();
+
 			console.log('Todo Item saved');
 
-			return itemAdded;
+			return todoItem.toObject();
 		} catch (e) {
 			console.log(e);
 			return e;
@@ -72,7 +75,7 @@ server.route({
 				return schema.errors;
 			}
 
-			const todoList = await db.getAll();
+			const todoList = await TodoItem.getAll(db);
 			// filter
 			if (schema.filter !== 'ALL') {
 				for (let i = todoList.length - 1; i >= 0; i--) {
@@ -127,7 +130,9 @@ server.route({
 			}
 
 			try {
-				const result = await db.delete(schema.id);
+				const todoItem = new TodoItem({id: schema.id}, db);
+				const result = await todoItem.delete();
+
 				if (result == null) {
 					return h.response('Todo Item Not Found').code(404);
 				}
@@ -165,25 +170,21 @@ server.route({
 				return [ ...queryStringSchema.errors || [], ...payloadSchema.errors || [] ];
 			}
 
-			if(await db.itemExists(id)) {
+			const todoItem = new TodoItem({id: id}, db);
+			const result = await todoItem.getInformationFromDB();
+
+			if(result == null) {
 				return h.response('Todo Item Not Found').code(404);
 			}
 
-			const item = await db.get(id);
-			if (item.state === 'COMPLETE') {
+			if (todoItem.state === 'COMPLETE') {
 				return h.response('Todo Item Already Completed').code(400);
 			}
 
-			const updatedItem = { ...item };
+			todoItem.updatePropertyIfDefined("state", state);
+			todoItem.updatePropertyIfDefined("description", description);
 
-			if (typeof state !== "undefined") {
-				updatedItem.state = state;
-			}
-			if (typeof description !== "undefined") {
-				updatedItem.description = description;
-			}
-
-			const newItem = await db.update(updatedItem);
+			const newItem = await todoItem.persist();
 			console.log('Todo Item updated');
 
 			return newItem;
