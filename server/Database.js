@@ -36,7 +36,7 @@ class Database {
 	};
 
 	async update(newItem) {
-		if (!this.itemExists(newItem.id)) {
+		if (!await this.itemExists(newItem.id)) {
 			return null;
 		}
 
@@ -73,7 +73,7 @@ class Database {
 	};
 
 	async delete(id) {
-		if (!this.itemExists(id)) {
+		if (!await this.itemExists(id)) {
 			return null;
 		}
 		const key = {
