@@ -81,6 +81,10 @@ class Database {
 
 		await this.cache.drop(key);
 	}
+
+	async itemExists(id) {
+		return await this.get(id) == null;
+	}
 }
 
 Database.options = {
