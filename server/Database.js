@@ -1,15 +1,5 @@
 const CatboxMemory = require('@hapi/catbox-memory');
 
-const options = {
-	name: 'elecctro_server_cache',
-	provider: {
-		constructor: CatboxMemory,
-		options: {
-			partition: 'todo_list_cached_data',
-		}
-	}
-};
-
 class Database {
 
 	constructor(server = null) {
@@ -64,7 +54,7 @@ class Database {
 
 		for (let i = 1; i < this.nextTodoId; i++) {
 			const item = await this.cache.get(i.toString());
-			if(item != null) {
+			if (item != null) {
 				list.push(item);
 			}
 		}
