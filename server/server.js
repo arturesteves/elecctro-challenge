@@ -13,8 +13,8 @@ const db = new Database(server);
 
 const validateSchema = async (schema, object) => {
 	try {
-		await schema.validateAsync(object, { abortEarly: false });
-		return object;
+		const result = await schema.validateAsync(object, { abortEarly: false });
+		return result;
 	} catch (err) {
 		const errors = err.details;
 		const messages = [];
@@ -30,11 +30,9 @@ server.route({
 	path: '/todos',
 	handler: async (request, h) => {
 		try {
-			const { description, ...remainingProperties } = request.payload;
-
 			const schema = await validateSchema(Joi.object({
-				description: Joi.string().trim().required()
-			}), { description, ...remainingProperties });
+				description: TodoItem.validations.description.required()
+			}), request.payload);
 
 			if (schema.errors) {
 				return schema.errors;
@@ -63,12 +61,10 @@ server.route({
 	path: '/todos',
 	handler: async (request, h) => {
 		try {
-			const { filter = 'ALL', orderBy = 'DATE_ADDED', ...remainingFields } = request.query;
-
 			const schema = await validateSchema(Joi.object({
-				filter: Joi.string().valid('ALL', 'COMPLETE', 'INCOMPLETE'),
-				orderBy: Joi.string().valid('DESCRIPTION', 'DATE_ADDED'),
-			}), { filter, orderBy, ...remainingFields });
+				filter: TodoItem.validations.filter,
+				orderBy: TodoItem.validations.orderBy,
+			}), request.query);
 
 			if (schema.errors) {
 				return schema.errors;
@@ -121,15 +117,15 @@ server.route({
 	handler: async (request, h) => {
 		try {
 			const schema = await validateSchema(Joi.object({
-				id: Joi.number().positive().required()
-			}), { ...request.params });
+				id: TodoItem.validations.id.required()
+			}), request.params);
 
 			if (schema.errors) {
 				return schema.errors;
 			}
 
 			try {
-				const todoItem = new TodoItem({id: schema.id}, db);
+				const todoItem = new TodoItem({ id: schema.id }, db);
 				const result = await todoItem.delete();
 
 				if (result == null) {
@@ -153,26 +149,24 @@ server.route({
 	path: '/todo/{id}',
 	handler: async (request, h) => {
 		try {
-			const { id } = request.params;
-			const { state, description } = request.payload;
-
 			const queryStringSchema = await validateSchema(Joi.object({
-				id: Joi.number().positive().required(),
-			}), { ...request.params });
+				id: TodoItem.validations.id.required(),
+			}), request.params);
 
 			const payloadSchema = await validateSchema(Joi.object({
 				state: Joi.string().valid('COMPLETE', 'INCOMPLETE'),
 				description: Joi.string().trim()
 			}).min(1), { ...request.payload });
 
-			if (queryStringSchema.errors || payloadSchema.errors) {
-				return [ ...queryStringSchema.errors || [], ...payloadSchema.errors || [] ];
+			const schema = joinSchemas(queryStringSchema, payloadSchema);
+			if (schema.errors) {
+				return schema.errors
 			}
 
-			const todoItem = new TodoItem({id: id}, db);
+			const todoItem = new TodoItem({ id: schema.id }, db);
 			const result = await todoItem.getInformationFromDB();
 
-			if(result == null) {
+			if (result == null) {
 				return h.response('Todo Item Not Found').code(404);
 			}
 
@@ -180,8 +174,8 @@ server.route({
 				return h.response('Todo Item Already Completed').code(400);
 			}
 
-			todoItem.updatePropertyIfDefined("state", state);
-			todoItem.updatePropertyIfDefined("description", description);
+			todoItem.updatePropertyIfDefined("state", schema.state);
+			todoItem.updatePropertyIfDefined("description", schema.description);
 
 			const newItem = await todoItem.persist();
 			console.log('Todo Item updated');
@@ -193,6 +187,13 @@ server.route({
 		}
 	}
 });
+
+const joinSchemas = (schemaA, schemaB) => {
+	if (schemaA.errors || schemaB.errors) {
+		return { errors: [ ...schemaA.errors || [], ...schemaB.errors || [] ] };
+	}
+	return { ...schemaA, ...schemaB };
+};
 
 const start = async function () {
 
