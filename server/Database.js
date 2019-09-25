@@ -86,7 +86,7 @@ class Database {
 	}
 
 	async itemExists(id) {
-		return await this.get(id) == null;
+		return await this.get(id) != null;
 	}
 }
 
