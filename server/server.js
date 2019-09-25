@@ -189,6 +189,19 @@ server.route({
 			const { id } = request.params;
 			const { state, description } = request.payload;
 
+			const queryStringSchema = await validateSchema(Joi.object({
+				id: Joi.number().positive().required(),
+			}), { ...request.params });
+
+			const payloadSchema = await validateSchema(Joi.object({
+				state: Joi.string().valid('COMPLETE', 'INCOMPLETE'),
+				description: Joi.string().trim()
+			}).min(1), { ...request.payload });
+
+			if (queryStringSchema.errors || payloadSchema.errors) {
+				return [ ...queryStringSchema.errors || [], ...payloadSchema.errors || [] ];
+			}
+
 			const key = {
 				segment: cacheSegment,
 				id: id.toString()
