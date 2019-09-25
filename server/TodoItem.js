@@ -13,7 +13,7 @@ class TodoItem {
 		if (this.id) {
 			return await this.db.update(this.toObject());
 		}
-
+		this.dateAdded = new Date().toISOString();
 		const result = await this.db.add(this.toObject());
 		this.id = result.id;
 		return result;

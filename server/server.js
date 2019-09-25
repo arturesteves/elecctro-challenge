@@ -42,8 +42,7 @@ server.route({
 
 			const item = {
 				state: 'INCOMPLETE',
-				description,
-				dateAdded: new Date().toISOString()
+				description: schema.description,
 			};
 
 			const todoItem = new TodoItem(item, db);
