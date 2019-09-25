@@ -76,7 +76,7 @@ server.route({
 			// filter
 			if (schema.filter !== 'ALL') {
 				for (let i = todoList.length - 1; i >= 0; i--) {
-					if (todoList[i].state === schema.filter) {
+					if (todoList[i].state !== schema.filter) {
 						todoList.splice(i, 1);
 					}
 				}
