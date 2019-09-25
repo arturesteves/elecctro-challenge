@@ -27,6 +27,7 @@ class Database {
 			segment: this.segment,
 			id: this.nextTodoId.toString()
 		};
+		item.id = this.nextTodoId.toString();
 
 		await this.cache.set(key, item, this.itemTTL);
 		this.nextTodoId++;
