@@ -35,16 +35,19 @@ class Database {
 		return item;
 	};
 
-	async update(newItem, id) {
-		const item = await this.get(id);
+	async update(newItem) {
+		if (!this.itemExists(newItem.id)) {
+			return null;
+		}
+
 		const key = {
 			segment: this.segment,
-			id: item.id
+			id: newItem.id
 		};
 
-		await this.cache.set(key, item, this.itemTTL);
+		await this.cache.set(key, newItem, this.itemTTL);
 
-		return item;
+		return newItem;
 	};
 
 	async get(id) {
@@ -53,12 +56,7 @@ class Database {
 			id,
 		};
 
-		const item = await this.cache.get(key);
-		if (item == null) {
-			throw Error('Item Not Found');
-		}
-
-		return item;
+		return await this.cache.get(key);
 	};
 
 	async getAll() {
@@ -73,13 +71,16 @@ class Database {
 	};
 
 	async remove(id) {
-		const item = await this.get(id);
+		if (!this.itemExists(id)) {
+			return null;
+		}
 		const key = {
 			segment: this.segment,
-			id: item.id
+			id: id
 		};
 
 		await this.cache.drop(key);
+		return id;
 	}
 
 	async itemExists(id) {
