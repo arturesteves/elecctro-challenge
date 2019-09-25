@@ -72,7 +72,7 @@ class Database {
 		return list;
 	};
 
-	async remove(id) {
+	async delete(id) {
 		if (!this.itemExists(id)) {
 			return null;
 		}

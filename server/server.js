@@ -127,7 +127,7 @@ server.route({
 			}
 
 			try {
-				const result = await db.remove(schema.id);
+				const result = await db.delete(schema.id);
 				if (result == null) {
 					return h.response('Todo Item Not Found').code(404);
 				}
