@@ -1,7 +1,9 @@
 const Hapi = require('@hapi/hapi');
-const Joi = require('@hapi/joi');
 const Database = require("./Database");
-const TodoItem = require("./TodoItem");
+const addItem = require('./handlers/addItem');
+const listItems = require('./handlers/listItems');
+const editItem = require('./handlers/editItem');
+const deleteItem = require('./handlers/deleteItem');
 
 const server = Hapi.server({
 	port: 3000,
@@ -11,199 +13,12 @@ const server = Hapi.server({
 
 const db = new Database(server);
 
-const validateSchema = async (schema, object) => {
-	try {
-		const result = await schema.validateAsync(object, { abortEarly: false });
-		return result;
-	} catch (err) {
-		const errors = err.details;
-		const messages = [];
-		for (let e of errors) {
-			messages.push(e.message);
-		}
-		return { errors: messages };
-	}
-};
-
-server.route({
-	method: 'PUT',
-	path: '/todos',
-	handler: async (request, h) => {
-		try {
-			const schema = await validateSchema(Joi.object({
-				description: TodoItem.validations.description.required()
-			}), request.payload);
-
-			if (schema.errors) {
-				return schema.errors;
-			}
-
-			const item = {
-				state: 'INCOMPLETE',
-				description: schema.description,
-			};
-
-			const todoItem = new TodoItem(item, db);
-			await todoItem.persist();
-
-			console.log('Todo Item saved');
-
-			return todoItem.toObject();
-		} catch (e) {
-			console.log(e);
-			return e;
-		}
-	}
-});
-
-server.route({
-	method: 'GET',
-	path: '/todos',
-	handler: async (request, h) => {
-		try {
-			const schema = await validateSchema(Joi.object({
-				filter: TodoItem.validations.filter,
-				orderBy: TodoItem.validations.orderBy,
-			}), request.query);
-
-			if (schema.errors) {
-				return schema.errors;
-			}
-
-			const todoList = await TodoItem.getAll(db);
-			// filter
-			if (schema.filter !== 'ALL') {
-				for (let i = todoList.length - 1; i >= 0; i--) {
-					if (todoList[i].state !== schema.filter) {
-						todoList.splice(i, 1);
-					}
-				}
-			}
-
-			// sort
-			if (schema.orderBy === 'DESCRIPTION') {
-				todoList.sort((a, b) => {
-					if (a.description < b.description) {
-						return -1;
-					}
-					if (a.description > b.description) {
-						return 1;
-					}
-					return 0;
-				});
-			} else {
-				todoList.sort((a, b) => {
-					if (a.dateAdded < b.dateAdded) {
-						return -1;
-					}
-					if (a.dateAdded > b.dateAdded) {
-						return 1;
-					}
-					return 0;
-				});
-			}
-
-			return todoList;
-		} catch (e) {
-			console.log(e);
-			return e;
-		}
-	}
-});
-
-server.route({
-	method: 'DELETE',
-	path: '/todo/{id}',
-	handler: async (request, h) => {
-		try {
-			const schema = await validateSchema(Joi.object({
-				id: TodoItem.validations.id.required()
-			}), request.params);
-
-			if (schema.errors) {
-				return schema.errors;
-			}
-
-			try {
-				const todoItem = new TodoItem({ id: schema.id }, db);
-				const result = await todoItem.delete();
-
-				if (result == null) {
-					return h.response('Todo Item Not Found').code(404);
-				}
-				return '';
-			} catch (e) {
-				console.log(e);
-				return e;
-			}
-
-		} catch (e) {
-			console.log(e);
-			return e;
-		}
-	}
-});
-
-server.route({
-	method: 'PATCH',
-	path: '/todo/{id}',
-	handler: async (request, h) => {
-		try {
-			const queryStringSchema = await validateSchema(Joi.object({
-				id: TodoItem.validations.id.required(),
-			}), request.params);
-
-			const payloadSchema = await validateSchema(Joi.object({
-				state: TodoItem.validations.state,
-				description: TodoItem.validations.description,
-			}).min(1).error(errors => {
-				errors.forEach(err => {
-					if (err.code === 'object.min') {
-						return err.message = 'Necessary to define at least one of the following properties: \"state\" or \"description\"'
-					}
-				});
-				return errors;
-			}), request.payload);
-
-			const schema = joinSchemas(queryStringSchema, payloadSchema);
-			if (schema.errors) {
-				return schema.errors
-			}
-
-			const todoItem = new TodoItem({ id: schema.id }, db);
-			const result = await todoItem.getInformationFromDB();
-
-			if (result == null) {
-				return h.response('Todo Item Not Found').code(404);
-			}
-
-			if (todoItem.state === 'COMPLETE') {
-				return h.response('Todo Item Already Completed').code(400);
-			}
-
-			todoItem.updatePropertyIfDefined("state", schema.state);
-			todoItem.updatePropertyIfDefined("description", schema.description);
-
-			const newItem = await todoItem.persist();
-			console.log('Todo Item updated');
-
-			return newItem;
-		} catch (e) {
-			console.log(e);
-			return e;
-		}
-	}
-});
-
-const joinSchemas = (schemaA, schemaB) => {
-	if (schemaA.errors || schemaB.errors) {
-		return { errors: [ ...schemaA.errors || [], ...schemaB.errors || [] ] };
-	}
-	return { ...schemaA, ...schemaB };
-};
+server.route(addItem(db));
+server.route(listItems(db));
+server.route(editItem(db));
+server.route(deleteItem(db));
 
 const start = async function () {
-
 	try {
 		await server.start();
 	} catch (err) {
