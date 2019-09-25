@@ -33,6 +33,12 @@ class TodoItem {
 		return this.db.delete(this.id);
 	}
 
+	updatePropertyIfDefined(property, value) {
+		if (typeof value !== "undefined") {
+			this[property] = value;
+		}
+	}
+
 	static async getAll(db) {
 		return db.getAll();
 	}
