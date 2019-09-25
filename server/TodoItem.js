@@ -1,3 +1,5 @@
+const Joi = require('@hapi/joi');
+
 class TodoItem {
 	constructor(draftTodoItem, db) {
 		this.id = draftTodoItem.id || null;
@@ -52,5 +54,12 @@ class TodoItem {
 		}
 	}
 }
+
+TodoItem.validations = {
+	id: Joi.number().positive().required(),
+	description: Joi.string().trim().required(),
+	filter: Joi.string().valid('ALL', 'COMPLETE', 'INCOMPLETE'),
+	orderBy: Joi.string().valid('DESCRIPTION', 'DATE_ADDED'),
+};
 
 module.exports = TodoItem;
