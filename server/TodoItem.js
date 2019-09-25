@@ -13,7 +13,7 @@ class TodoItem {
 	async add() {
 		this.dateAdded = new Date().toISOString();
 
-		const [ error, result ] = await this.db.add(this.toObject());
+		const [ error, result ] = await on(this.db.add(this.toObject()));
 		if (error) {
 			console.log(error);
 			throw new Error('Failed to persist a Todo Item');
@@ -55,10 +55,11 @@ class TodoItem {
 	}
 
 	async delete() {
-		const [ error, ] = await on(this.db.delete(this.id));
+		const [ error, result] = await on(this.db.delete(this.id));
 		if (error) {
 			throw new Error('Failed to delete a Todo Item');
 		}
+		return result;
 	}
 
 	updatePropertyIfDefined(property, value) {
