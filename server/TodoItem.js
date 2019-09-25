@@ -1,4 +1,3 @@
-
 class TodoItem {
 	constructor(draftTodoItem, db) {
 		this.id = draftTodoItem.id || null;
@@ -18,7 +17,7 @@ class TodoItem {
 		return result;
 	}
 
-	async getInformation() {
+	async getInformationFromDB() {
 		if (!await this.db.itemExists(this.id)) {
 			return null;
 		}
