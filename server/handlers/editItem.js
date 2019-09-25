@@ -39,7 +39,7 @@ const handler = async (request, h, db) => {
 		todoItem.updatePropertyIfDefined("state", schema.state);
 		todoItem.updatePropertyIfDefined("description", schema.description);
 
-		const newItem = await todoItem.persist();
+		const newItem = await todoItem.update();
 		console.log('Todo Item updated');
 
 		return newItem;

@@ -18,7 +18,7 @@ const handler = async (request, h, db) => {
 		};
 
 		const todoItem = new TodoItem(item, db);
-		await todoItem.persist();
+		await todoItem.add();
 
 		console.log('Todo Item saved');
 

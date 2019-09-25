@@ -9,13 +9,26 @@ class TodoItem {
 		this.db = db;
 	}
 
-	async persist() {
-		if (this.id) {
-			return await this.db.update(this.toObject());
-		}
+	async add() {
 		this.dateAdded = new Date().toISOString();
-		const result = await this.db.add(this.toObject());
+
+		const [ error, result ] = await this.db.add(this.toObject());
+		if (error) {
+			console.log(error);
+			throw new Error('Failed to persist a Todo Item');
+		}
+
 		this.id = result.id;
+		return result;
+	}
+
+	async update() {
+		const [ error, result ] = await on(this.db.update(this.toObject()));
+		if (error) {
+			console.log(error);
+			throw new Error('Failed to persist a Todo Item');
+		}
+
 		return result;
 	}
 
