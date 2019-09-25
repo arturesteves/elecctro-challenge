@@ -1,27 +1,14 @@
 const Hapi = require('@hapi/hapi');
-const CatboxMemory = require('@hapi/catbox-memory');
 const Joi = require('@hapi/joi');
+const Database = require("./Database");
 
 const server = Hapi.server({
 	port: 3000,
 	host: 'localhost',
-	cache: [
-		{
-			name: 'elecctro_server_cache',
-			provider: {
-				constructor: CatboxMemory,
-				options: {
-					partition: 'todo_list_cached_data',
-				}
-			}
-		}
-	]
+	cache: [ Database.options ]
 });
 
-const Cache = server.cache({ segment: 'todo_list', expiresIn: 1000 * 5 });
-const cacheSegment = 'todo_list';
-
-let nextTodoId = 1;
+const db = new Database(server);
 
 const validateSchema = async (schema, object) => {
 	try {
@@ -52,23 +39,16 @@ server.route({
 				return schema.errors;
 			}
 
-			const newTodoItem = {
-				id: nextTodoId.toString(),
+			const item = {
 				state: 'INCOMPLETE',
 				description,
 				dateAdded: new Date().toISOString()
 			};
 
-			const key = {
-				segment: cacheSegment,
-				id: newTodoItem.id
-			};
-
-			await Cache.set(key, newTodoItem, 50000);
+			const itemAdded = await db.add(item);
 			console.log('Todo Item saved');
 
-			nextTodoId++;
-			return newTodoItem;
+			return itemAdded;
 		} catch (e) {
 			console.log(e);
 			return e;
@@ -92,25 +72,9 @@ server.route({
 				return schema.errors;
 			}
 
-			const todoList = [];
-
-			const key = {
-				segment: cacheSegment,
-			};
-
-			for (let i = 1; i < nextTodoId; i++) {
-				key.id = i.toString();
-				const item = await Cache.get(key);
-				if (item != null) {
-					todoList.push(item);
-				}
-			}
-
-			console.log('Temp List', todoList);
-
+			const todoList = await db.getAll();
 			// filter
 			if (schema.filter !== 'ALL') {
-				console.log('Not ALL');
 				for (let i = todoList.length - 1; i >= 0; i--) {
 					if (todoList[i].state === schema.filter) {
 						todoList.splice(i, 1);
@@ -162,18 +126,17 @@ server.route({
 				return schema.errors;
 			}
 
-			const key = {
-				segment: cacheSegment,
-				id: schema.id.toString()
-			};
-
-			const item = await Cache.get(key);
-			if (item == null) {
-				return h.response('Todo Item Not Found').code(404);
+			try {
+				const result = await db.remove(schema.id);
+				if (result == null) {
+					return h.response('Todo Item Not Found').code(404);
+				}
+				return '';
+			} catch (e) {
+				console.log(e);
+				return e;
 			}
 
-			await Cache.drop(key);
-			return '';
 		} catch (e) {
 			console.log(e);
 			return e;
@@ -202,15 +165,11 @@ server.route({
 				return [ ...queryStringSchema.errors || [], ...payloadSchema.errors || [] ];
 			}
 
-			const key = {
-				segment: cacheSegment,
-				id: id.toString()
-			};
-
-			const item = await Cache.get(key);
-			if (item == null) {
+			if(await db.itemExists(id)) {
 				return h.response('Todo Item Not Found').code(404);
 			}
+
+			const item = await db.get(id);
 			if (item.state === 'COMPLETE') {
 				return h.response('Todo Item Already Completed').code(400);
 			}
@@ -224,10 +183,10 @@ server.route({
 				updatedItem.description = description;
 			}
 
-			await Cache.set(key, updatedItem, 50000);
+			const newItem = await db.update(updatedItem);
 			console.log('Todo Item updated');
 
-			return updatedItem;
+			return newItem;
 		} catch (e) {
 			console.log(e);
 			return e;
