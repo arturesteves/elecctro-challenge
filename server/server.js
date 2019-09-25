@@ -154,9 +154,16 @@ server.route({
 			}), request.params);
 
 			const payloadSchema = await validateSchema(Joi.object({
-				state: Joi.string().valid('COMPLETE', 'INCOMPLETE'),
-				description: Joi.string().trim()
-			}).min(1), { ...request.payload });
+				state: TodoItem.validations.state,
+				description: TodoItem.validations.description,
+			}).min(1).error(errors => {
+				errors.forEach(err => {
+					if (err.code === 'object.min') {
+						return err.message = 'Necessary to define at least one of the following properties: \"state\" or \"description\"'
+					}
+				});
+				return errors;
+			}), request.payload);
 
 			const schema = joinSchemas(queryStringSchema, payloadSchema);
 			if (schema.errors) {
