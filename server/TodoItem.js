@@ -1,4 +1,5 @@
 const Joi = require('@hapi/joi');
+const { on } = require("./utils");
 
 class TodoItem {
 	constructor(draftTodoItem, db) {
@@ -33,10 +34,19 @@ class TodoItem {
 	}
 
 	async getInformationFromDB() {
-		if (!await this.db.itemExists(this.id)) {
+		const [error, itemExists] = await on(this.db.itemExists(this.id));
+		if(error) {
+			throw new Error('Failed to get Todo Item Information from DB');
+		}
+		if (!itemExists){
 			return null;
 		}
-		const item = await this.db.get(this.id);
+
+		const [errorGet, item] = await on(this.db.get(this.id));
+		if(errorGet) {
+			throw new Error('Failed to get Todo Item Information from DB');
+		}
+
 		this.state = item.state;
 		this.description = item.description;
 		this.dateAdded = item.dateAdded;
@@ -45,7 +55,10 @@ class TodoItem {
 	}
 
 	async delete() {
-		return this.db.delete(this.id);
+		const [ error, ] = await on(this.db.delete(this.id));
+		if (error) {
+			throw new Error('Failed to delete a Todo Item');
+		}
 	}
 
 	updatePropertyIfDefined(property, value) {
@@ -55,7 +68,12 @@ class TodoItem {
 	}
 
 	static async getAll(db) {
-		return db.getAll();
+		const [ error, result ] = await on(db.getAll());
+		if (error) {
+			throw new Error('Failed to get a List of Todo Items');
+		}
+
+		return result;
 	}
 
 	toObject() {

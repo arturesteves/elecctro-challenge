@@ -18,6 +18,15 @@ const joinSchemas = (schemaA, schemaB) => {
 	return { ...schemaA, ...schemaB };
 };
 
+export const on = async promise => {
+	try {
+		const data = await promise;
+		return [null, data];
+	} catch (error) {
+		return [error];
+	}
+};
+
 module.exports = {
 	validateSchema,
 	joinSchemas
