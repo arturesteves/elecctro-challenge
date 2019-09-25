@@ -3,112 +3,112 @@ const CatboxMemory = require('@hapi/catbox-memory');
 const Joi = require('@hapi/joi');
 
 const server = Hapi.server({
-  port: 3000,
-  host: 'localhost',
-  cache: [
-    {
-      name: 'elecctro_server_cache',
-      provider: {
-        constructor: CatboxMemory,
-        options: {
-          partition: 'todo_list_cached_data',
-        }
-      }
-    }
-  ]
+	port: 3000,
+	host: 'localhost',
+	cache: [
+		{
+			name: 'elecctro_server_cache',
+			provider: {
+				constructor: CatboxMemory,
+				options: {
+					partition: 'todo_list_cached_data',
+				}
+			}
+		}
+	]
 });
 
-const Cache = server.cache({segment: 'todo_list', expiresIn: 1000 * 5});
+const Cache = server.cache({ segment: 'todo_list', expiresIn: 1000 * 5 });
 const cacheSegment = 'todo_list';
 
 let nextTodoId = 1;
 
 const validateSchema = async (schema, object) => {
-	try{
-			await schema.validateAsync(object, {abortEarly: false});
-			return object;
-	}catch (err) {
+	try {
+		await schema.validateAsync(object, { abortEarly: false });
+		return object;
+	} catch (err) {
 		const errors = err.details;
 		const messages = [];
-		for(let e of errors) {
+		for (let e of errors) {
 			messages.push(e.message);
 		}
-		return {errors: messages};
+		return { errors: messages };
 	}
 };
 
 server.route({
-  method: 'PUT',
-  path: '/todos',
-  handler: async (request, h) => {
-    try {
-      const { description, ...remainingProperties } = request.payload;
+	method: 'PUT',
+	path: '/todos',
+	handler: async (request, h) => {
+		try {
+			const { description, ...remainingProperties } = request.payload;
 
-      const schema = await validateSchema(Joi.object({
+			const schema = await validateSchema(Joi.object({
 				description: Joi.string().trim().required()
 			}), { description, ...remainingProperties });
 
-			if(schema.errors) {
+			if (schema.errors) {
 				return schema.errors;
 			}
 
-      const newTodoItem = {
-        id: nextTodoId.toString(),
-        state: 'INCOMPLETE',
-        description,
-        dateAdded: new Date().toISOString()
-      };
+			const newTodoItem = {
+				id: nextTodoId.toString(),
+				state: 'INCOMPLETE',
+				description,
+				dateAdded: new Date().toISOString()
+			};
 
-      const key = {
-        segment: cacheSegment,
-        id: newTodoItem.id
-      };
+			const key = {
+				segment: cacheSegment,
+				id: newTodoItem.id
+			};
 
-      await Cache.set(key, newTodoItem, 50000);
-      console.log('Todo Item saved');
+			await Cache.set(key, newTodoItem, 50000);
+			console.log('Todo Item saved');
 
-      nextTodoId++;
-      return newTodoItem;
-    }catch(e){
-      console.log(e);
-      return e;
-    }
-  }
+			nextTodoId++;
+			return newTodoItem;
+		} catch (e) {
+			console.log(e);
+			return e;
+		}
+	}
 });
 
 server.route({
-  method: 'GET',
-  path: '/todos',
-  handler: async (request, h) => {
-    try {
-      const { filter = 'ALL', orderBy = 'DATE_ADDED', ...remainingFields } = request.query;
+	method: 'GET',
+	path: '/todos',
+	handler: async (request, h) => {
+		try {
+			const { filter = 'ALL', orderBy = 'DATE_ADDED', ...remainingFields } = request.query;
 
-      const schema = await validateSchema(Joi.object({
-				filter: Joi.string().valid('ALL','COMPLETE', 'INCOMPLETE'),
-				orderBy: Joi.string().valid('DESCRIPTION','DATE_ADDED'),
-			}), {filter, orderBy, ...remainingFields});
+			const schema = await validateSchema(Joi.object({
+				filter: Joi.string().valid('ALL', 'COMPLETE', 'INCOMPLETE'),
+				orderBy: Joi.string().valid('DESCRIPTION', 'DATE_ADDED'),
+			}), { filter, orderBy, ...remainingFields });
 
-      if(schema.errors) {
+			if (schema.errors) {
 				return schema.errors;
 			}
 
-      const todoList = [];
+			const todoList = [];
 
-      const key = {
-        segment: cacheSegment,
-      };
+			const key = {
+				segment: cacheSegment,
+			};
 
-      for(let i = 1; i < nextTodoId; i++) {
-      	key.id = i.toString();
+			for (let i = 1; i < nextTodoId; i++) {
+				key.id = i.toString();
 				const item = await Cache.get(key);
-				if(item != null) {
+				if (item != null) {
 					todoList.push(item);
 				}
 			}
 
-      console.log('Temp List', todoList);
+			console.log('Temp List', todoList);
 
-      // filter
+			// filter
 			if (schema.filter !== 'ALL') {
 				console.log('Not ALL');
 				for (let i = todoList.length - 1; i >= 0; i--) {
@@ -119,26 +119,34 @@ server.route({
 			}
 
 			// sort
-			if(schema.orderBy === 'DESCRIPTION') {
+			if (schema.orderBy === 'DESCRIPTION') {
 				todoList.sort((a, b) => {
-					if(a.description < b.description) return -1;
-					if(a.description > b.description) return 1;
+					if (a.description < b.description) {
+						return -1;
+					}
+					if (a.description > b.description) {
+						return 1;
+					}
 					return 0;
 				});
 			} else {
 				todoList.sort((a, b) => {
-					if(a.dateAdded < b.dateAdded) return -1;
-					if(a.dateAdded > b.dateAdded) return 1;
+					if (a.dateAdded < b.dateAdded) {
+						return -1;
+					}
+					if (a.dateAdded > b.dateAdded) {
+						return 1;
+					}
 					return 0;
 				});
 			}
 
-      return todoList;
-    }catch(e){
-      console.log(e);
-      return e;
-    }
-  }
+			return todoList;
+		} catch (e) {
+			console.log(e);
+			return e;
+		}
+	}
 });
 
 server.route({
@@ -147,7 +155,7 @@ server.route({
 	handler: async (request, h) => {
 		try {
 			const params = request.params;
-			const { id} = params;
+			const { id } = params;
 
 			const key = {
 				segment: cacheSegment,
@@ -155,13 +163,13 @@ server.route({
 			};
 
 			const item = await Cache.get(key);
-			if(item == null) {
+			if (item == null) {
 				return h.response('Todo Item Not Found').code(404);
 			}
 
 			await Cache.drop(key);
 			return '';
-		}catch(e){
+		} catch (e) {
 			console.log(e);
 			return e;
 		}
@@ -182,19 +190,19 @@ server.route({
 			};
 
 			const item = await Cache.get(key);
-			if(item == null) {
+			if (item == null) {
 				return h.response('Todo Item Not Found').code(404);
 			}
-			if(item.state === 'COMPLETE') {
+			if (item.state === 'COMPLETE') {
 				return h.response('Todo Item Already Completed').code(400);
 			}
 
-			const updatedItem = {...item};
+			const updatedItem = { ...item };
 
-			if(typeof state !== "undefined") {
+			if (typeof state !== "undefined") {
 				updatedItem.state = state;
 			}
-			if(typeof description !== "undefined") {
+			if (typeof description !== "undefined") {
 				updatedItem.description = description;
 			}
 
@@ -202,7 +210,7 @@ server.route({
 			console.log('Todo Item updated');
 
 			return updatedItem;
-		}catch(e){
+		} catch (e) {
 			console.log(e);
 			return e;
 		}
@@ -211,14 +219,14 @@ server.route({
 
 const start = async function () {
 
-  try {
-    await server.start();
-  } catch (err) {
-    console.log(err);
-    process.exit(1);
-  }
+	try {
+		await server.start();
+	} catch (err) {
+		console.log(err);
+		process.exit(1);
+	}
 
-  console.log(`Server running on ${server.info.uri}`);
+	console.log(`Server running on ${ server.info.uri }`);
 };
 
 start();
