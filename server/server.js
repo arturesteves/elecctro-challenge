@@ -154,12 +154,17 @@ server.route({
 	path: '/todo/{id}',
 	handler: async (request, h) => {
 		try {
-			const params = request.params;
-			const { id } = params;
+			const schema = await validateSchema(Joi.object({
+				id: Joi.number().positive().required()
+			}), { ...request.params });
+
+			if (schema.errors) {
+				return schema.errors;
+			}
 
 			const key = {
 				segment: cacheSegment,
-				id: id.toString()
+				id: schema.id.toString()
 			};
 
 			const item = await Cache.get(key);
