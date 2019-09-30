@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const NewTodoItem = () => {
+const AddTodoItem = () => {
 	return (
 		<div>
 			<form name="newTodoForm" onSubmit={ onSubmit }>
@@ -24,4 +24,4 @@ const resetForm = () => {
 	form.reset();
 };
 
-export default NewTodoItem;
+export default AddTodoItem;

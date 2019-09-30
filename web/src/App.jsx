@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import NewTodoItem from "./NewTodoItem";
+import AddTodoItem from "./AddTodoItem";
 import ListTodoItems from "./ListTodoItems";
 
 const todoList= [
@@ -18,7 +18,7 @@ const hideCompleted = (e) => {
 const App = () => {
   return (
     <div className="App">
-      <NewTodoItem/>
+      <AddTodoItem/>
       <ListTodoItems todos={todoList}/>
       <div>
         <span>Hide Completed</span>
