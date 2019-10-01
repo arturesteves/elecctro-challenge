@@ -5,7 +5,7 @@ const AddTodoItem = () => {
 	return (
 		<div>
 			<form name="newTodoForm" onSubmit={ onSubmit }>
-				<input type="text" name="todoDescription" required={ true }/>
+				<input type="text" name="todoDescription" placeholder="Write new task here" required={ true }/>
 				<button type="submit">Create</button>
 			</form>
 		</div>
