@@ -2,6 +2,8 @@ import React from 'react';
 import './App.css';
 import AddTodoItem from "./AddTodoItem";
 import ListTodoItems from "./ListTodoItems";
+import { createSelector } from 'reselect'
+
 
 const todoList= [
   {id: 'A', description: 'A', state: 'INCOMPLETE'},
@@ -11,8 +13,11 @@ const todoList= [
   {id: 'E', description: 'E', state: 'COMPLETE'},
 ];
 
-const hideCompleted = (e) => {
-  console.log(e.target.checked);
+
+const hideCompleted = (list, checked, setTodos) => {
+	const result = filteredTodoList({ list, checked });
+	console.log('result:', result);
+	setTodos(result);
 };
 
 const App = () => {
@@ -27,5 +32,17 @@ const App = () => {
     </div>
   );
 };
+
+const filteredTodoList = createSelector(
+	(state) => state.list.filter((item) => {
+		if (state.checked && item.state === 'INCOMPLETE') {
+			return item;
+		}
+		if (!state.checked) {
+			return item;
+		}
+	}),
+	(items) => items.map((item) => item)
+);
 
 export default App;
