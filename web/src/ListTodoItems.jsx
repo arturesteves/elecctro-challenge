@@ -17,6 +17,7 @@ const ListTodoItems = ({ todos: todoList }) => {
 
 	return (
 		<div>
+			<h1>Tasks</h1>
 			<ul>
 				{ todos.map((todo, index) => {
 					return <li key={ index }>
