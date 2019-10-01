@@ -8,7 +8,10 @@ const deleteItem = require('./handlers/deleteItem');
 const server = Hapi.server({
 	port: 3000,
 	host: 'localhost',
-	cache: [ Database.options ]
+	cache: [ Database.options ],
+	routes: {
+		cors: true
+	}
 });
 
 const db = new Database(server);
