@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import * as PropTypes from 'prop-types';
 import ViewTodoItem from "./ViewTodoItem";
 
@@ -8,20 +8,15 @@ const markTodo = (e) => {
 
 };
 
-const ListTodoItems = ({ todos: todoList }) => {
-	const [ todos, setTodos ] = useState([]);
-
-	useEffect(() => {
-		setTodos(todoList);
-	}, []);
-
+const ListTodoItems = ({ todos }) => {
 	return (
 		<div>
 			<h1>Tasks</h1>
 			<ul>
+				{ todos.length === 0 ? <span>No Todos :(</span> : null }
 				{ todos.map((todo, index) => {
 					return <li key={ index }>
-						<ViewTodoItem todo={todo}/>
+						<ViewTodoItem todo={ todo }/>
 					</li>;
 				}) }
 			</ul>
