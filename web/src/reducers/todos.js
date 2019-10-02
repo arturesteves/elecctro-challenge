@@ -27,6 +27,6 @@ const todos = (state = initialState, action) => {
 	}
 };
 
-export const getTodosFromStore = state => state;
+export const getTodosFromStore = state => state.todos;
 
 export default todos;
