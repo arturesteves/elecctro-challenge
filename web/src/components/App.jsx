@@ -4,6 +4,7 @@ import AddTodoItem from "./AddTodoItem";
 import ListTodoItems from "./ListTodoItems";
 import { createSelector } from 'reselect'
 import ListTodoItemsContainer from "../containers/ListTodoItemsContainer";
+import { filteredTodoList } from "../selectors/visibility";
 
 
 const todoList = [
@@ -70,16 +71,5 @@ const App = () => {
 	);
 };
 
-const filteredTodoList = createSelector(
-	(state) => state.list.filter((item) => {
-		if (state.checked && item.state === 'INCOMPLETE') {
-			return item;
-		}
-		if (!state.checked) {
-			return item;
-		}
-	}),
-	(items) => items.map((item) => item)
-);
 
 export default App;
