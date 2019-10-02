@@ -1,4 +1,4 @@
-import { ADD_TODO } from "../actions/todos";
+import { ADD_TODO, FETCH_TODOS } from "../actions/todos";
 
 
 const initialState = [
@@ -20,6 +20,8 @@ const todos = (state = initialState, action) => {
 	switch (action.type) {
 		case ADD_TODO:
 			return [ ...state, action.newTodo ];
+		case FETCH_TODOS:
+			return action.todos;
 		default:
 			return state;
 	}

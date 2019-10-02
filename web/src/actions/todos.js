@@ -1,4 +1,4 @@
-import { addTodoItemRequest } from "../services/todos";
+import { addTodoItemRequest, getTodoItemsRequest } from "../services/todos";
 
 
 export const ADD_TODO = 'ADD_TODO';
@@ -16,5 +16,25 @@ export const addTodo = (todo) => {
 			return;
 		}
 		dispatch(addTodoAction(result.data));
+	}
+};
+
+
+export const FETCH_TODOS = 'FETCH_TODOS';
+export const fetchTodosAction = (todos) => {
+	return {
+		type: FETCH_TODOS,
+		todos
+	};
+};
+export const fetchTodos = () => {
+	return async (dispatch) => {
+		const result = await getTodoItemsRequest();
+		console.log('Result', result);
+		if(result.error) {
+			console.log('Fetch Todos Request Failed');
+			return;
+		}
+		dispatch(fetchTodosAction(result.data));
 	}
 };
