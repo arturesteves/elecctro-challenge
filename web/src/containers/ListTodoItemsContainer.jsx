@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { getTodosFromStore } from "../reducers/todos";
+import { selectTodos } from "../reducers/todos";
 import ListTodoItems from "../components/ListTodoItems";
 import { fetchTodos } from "../actions/todos";
 
@@ -20,7 +20,7 @@ const ListTodoItemsContainer = (props) => {
 
 const mapStateToProps = (state) => {
 	return {
-		todos: getTodosFromStore(state)
+		todos: selectTodos(state)
 	};
 };
 
