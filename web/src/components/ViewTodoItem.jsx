@@ -52,7 +52,7 @@ ViewTodoItem.propTypes = {
 		id: PropTypes.string.isRequired,
 		description: PropTypes.string.isRequired,
 		state: PropTypes.string.isRequired,
-		dateAdded: PropTypes.object
+		dateAdded: PropTypes.string
 	}).isRequired
 };
 
