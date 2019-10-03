@@ -1,8 +1,8 @@
-import React, { Fragment, useState, useEffect } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { selectTodos } from "../reducers/todos";
 import ListTodoItems from "../components/ListTodoItems";
 import { fetchTodos } from "../actions/todos";
+import { selectFilteredTodoList } from "../reducers/visibility";
 
 
 const ListTodoItemsContainer = (props) => {
@@ -20,7 +20,7 @@ const ListTodoItemsContainer = (props) => {
 
 const mapStateToProps = (state) => {
 	return {
-		todos: selectTodos(state)
+		todos: selectFilteredTodoList(state)
 	};
 };
 
