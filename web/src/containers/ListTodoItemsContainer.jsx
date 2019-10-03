@@ -2,7 +2,7 @@ import React, { Fragment, useEffect } from 'react';
 import { connect } from 'react-redux';
 import ListTodoItems from "../components/ListTodoItems";
 import { fetchTodos } from "../actions/todos";
-import { selectFilteredTodoList } from "../reducers/visibility";
+import { selectVisibleAndSortedTodoItems } from "../reducers/sorting";
 
 
 const ListTodoItemsContainer = (props) => {
@@ -20,7 +20,7 @@ const ListTodoItemsContainer = (props) => {
 
 const mapStateToProps = (state) => {
 	return {
-		todos: selectFilteredTodoList(state)
+		todos: selectVisibleAndSortedTodoItems(state)
 	};
 };
 
