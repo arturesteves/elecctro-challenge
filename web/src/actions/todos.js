@@ -30,7 +30,6 @@ export const fetchTodosAction = (todos) => {
 export const fetchTodos = () => {
 	return async (dispatch) => {
 		const result = await getTodoItemsRequest();
-		console.log('Result', result);
 		if (result.error) {
 			console.log('Fetch Todos Request Failed');
 			return;
@@ -44,12 +43,13 @@ export const EDIT_TODO_FAILED = 'EDIT_TODO_FAILED';
 export const editTodoAction = (todo, index) => {
 	return {
 		type: EDIT_TODO,
+		todo,
+		index
 	}
 };
 export const editTodo = (todo, index) => {
 	return async (dispatch) => {
 		const result = await editTodoItemRequest(todo);
-		console.log('RESULT', result);
 		if (result.error) {
 			console.log('Edit Todo Request Failed');
 			dispatch(editTodoFailedAction());
