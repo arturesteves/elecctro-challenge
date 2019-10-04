@@ -2,10 +2,10 @@ import React, { Fragment } from 'react';
 import * as PropTypes from 'prop-types';
 
 
-const ViewTodoItem = ({ todo }) => {
-	return (
+const ViewTodoItem = ({ todo, onDelete }) => {
+		return (
 		<Fragment>
-			{ isTodoCompleted(todo) ? <ViewCompleteTodoItem todo={ todo }/> : <ViewIncompleteTodoItem todo={ todo }/> }
+			{ isTodoCompleted(todo) ? <ViewCompleteTodoItem todo={ todo } onDelete={onDelete}/> : <ViewIncompleteTodoItem todo={ todo } onDelete={onDelete}/> }
 		</Fragment>
 	);
 };
@@ -14,7 +14,7 @@ const isTodoCompleted = (todo) => {
 	return todo.state === 'COMPLETE';
 };
 
-const ViewCompleteTodoItem = ({ todo }) => {
+const ViewCompleteTodoItem = ({ todo, onDelete }) => {
 
 	return (
 		<Fragment>
@@ -24,7 +24,7 @@ const ViewCompleteTodoItem = ({ todo }) => {
 	)
 };
 
-const ViewIncompleteTodoItem = ({ todo }) => {
+const ViewIncompleteTodoItem = ({ todo, onDelete }) => {
 
 	return (
 		<Fragment>
@@ -36,6 +36,7 @@ const ViewIncompleteTodoItem = ({ todo }) => {
 			</button>
 			<button onClick={ () => {
 				alert('Delete');
+				onDelete();
 			} }>Delete
 			</button>
 		</Fragment>

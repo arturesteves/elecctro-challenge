@@ -2,6 +2,7 @@ import React from 'react';
 import * as PropTypes from 'prop-types';
 import ViewTodoItem from "./ViewTodoItem";
 import ClickableHeader from "../containers/ClickableHeader";
+import ViewTodoItemContainer from "../containers/ViewTodoItemContainer";
 
 
 const markTodo = (e) => {
@@ -17,7 +18,7 @@ const ListTodoItems = ({ todos }) => {
 				{ todos.length === 0 ? <span>No Todos :(</span> : null }
 				{ todos.map((todo, index) => {
 					return <li key={ index }>
-						<ViewTodoItem todo={ todo }/>
+						<ViewTodoItemContainer todo={ todo } index={index}/>
 					</li>;
 				}) }
 			</ul>
