@@ -35,7 +35,7 @@ export const editTodoItemRequest = async (todo) => {
 	const [ error, response ] = await on(axios({
 		method: 'PATCH',
 		url: `${ baseURL }/todo/${ todo.id }`,
-		data: todo
+		data: { state: todo.state, description: todo.description }
 	}));
 	if (error) {
 		console.log('Edit Todo Item Request Error:', error);
