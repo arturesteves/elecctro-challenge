@@ -40,20 +40,21 @@ export const fetchTodos = () => {
 };
 
 export const EDIT_TODO = 'EDIT_TODO';
-export const editTodoAction = (todo) => {
+export const editTodoAction = (todo, index) => {
 	return {
 		type: EDIT_TODO,
-		todo
+		todo,
+		index
 	}
 };
-export const editTodo = (todo) => {
+export const editTodo = (todo, index) => {
 	return async (dispatch) => {
 		const result = await editTodoItemRequest(todo);
 		if (result.error) {
 			console.log('Edit Todo Request Failed');
 			return;
 		}
-		dispatch(editTodoAction(result.data));
+		dispatch(editTodoAction(result.data, index));
 	}
 };
 
@@ -64,14 +65,14 @@ export const deleteTodoAction = (id) => {
 		id
 	}
 };
-export const deleteTodo = (id) => {
+export const deleteTodo = (id, index) => {
 	return async (dispatch) => {
 		const result = await deleteTodoItemRequest(id);
 		if (result.error) {
 			console.log('Delete Todo Request Failed');
 			return;
 		}
-		dispatch(deleteTodoAction(result.data));
+		dispatch(deleteTodoAction(result.data, index));
 	}
 };
 
