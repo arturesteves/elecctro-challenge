@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 const protocol = 'http';
 const hostname = 'localhost:3000';
 const baseURL = `${ protocol }://${ hostname }`;
@@ -50,7 +51,7 @@ export const deleteTodoItemRequest = async (id) => {
 	}));
 	if (error) {
 		console.log('Delete Todo Item Request Error:', error);
-		return error;
+		return { error };
 	}
 	return response;
 };

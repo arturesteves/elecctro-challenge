@@ -59,10 +59,16 @@ export const editTodo = (todo, index) => {
 };
 
 export const DELETE_TODO = 'DELETE_TODO';
+export const DELETE_TODO_FAILED = 'DELETE_TODO_FAILED';
 export const deleteTodoAction = (id) => {
 	return {
 		type: DELETE_TODO,
 		id
+	}
+};
+export const deleteTodoFailedAction = () => {
+	return {
+		type: DELETE_TODO_FAILED
 	}
 };
 export const deleteTodo = (id, index) => {
@@ -70,6 +76,7 @@ export const deleteTodo = (id, index) => {
 		const result = await deleteTodoItemRequest(id);
 		if (result.error) {
 			console.log('Delete Todo Request Failed');
+			dispatch(deleteTodoFailedAction());
 			return;
 		}
 		dispatch(deleteTodoAction(result.data, index));

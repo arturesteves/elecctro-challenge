@@ -1,4 +1,4 @@
-import { ADD_TODO, DELETE_TODO, EDIT_TODO, FETCH_TODOS } from "../actions/todos";
+import { ADD_TODO, DELETE_TODO, DELETE_TODO_FAILED, EDIT_TODO, FETCH_TODOS } from "../actions/todos";
 
 
 const initialState = [];
@@ -13,6 +13,7 @@ const todos = (state = initialState, action) => {
 			return updateItem(state, action.todo, action.index);
 		case DELETE_TODO:
 			return deleteItem(state, action.index);
+		case DELETE_TODO_FAILED:
 		default:
 			return state;
 	}
