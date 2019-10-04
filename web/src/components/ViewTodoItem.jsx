@@ -8,17 +8,17 @@ const ViewTodoItem = ({ todo, onDelete, onEdit }) => {
 
 	return (
 		<Fragment>
-			{ mode === 'VIEW' ? showViewMode(todo, onDelete, setMode) : null }
+			{ mode === 'VIEW' ? showViewMode(todo, onDelete, onEdit, setMode) : null }
 			{ mode === 'EDIT' ? showEditMode(todo, onEdit, setMode) : null }
 		</Fragment>
 	);
 };
 
-const showViewMode = (todo, onDelete, setMode) => {
+const showViewMode = (todo, onDelete, onEdit, setMode) => {
 	if (isTodoCompleted(todo)) {
 		return <ViewCompleteTodoItem todo={ todo } onDelete={ onDelete }/>;
 	}
-	return <ViewIncompleteTodoItem todo={ todo } onDelete={ onDelete } setMode={ setMode }/>
+	return <ViewIncompleteTodoItem todo={ todo } onDelete={ onDelete } onEdit={ onEdit } setMode={ setMode }/>
 };
 
 const isTodoCompleted = (todo) => {
@@ -38,25 +38,9 @@ const ViewCompleteTodoItem = ({ todo, onDelete }) => {
 
 	return (
 		<Fragment>
-			<input type="checkbox" name="todoCompleted" onChange={ markTodo } checked={ true } disabled={ true }/>
+			<input type="checkbox" name="todoCompleted" checked={ true } disabled={ true }/>
 			<Strike>{ todo.description }</Strike>
-		</Fragment>
-	)
-};
-
-const ViewIncompleteTodoItem = ({ todo, onDelete, setMode }) => {
-
-	return (
-		<Fragment>
-			<input type="checkbox" name="todoCompleted" onChange={ markTodo }/>
-			<span>{ todo.description }{ ' ' }</span>
 			<button onClick={ () => {
-				//alert('Edit');
-				setMode('EDIT');
-			} }>Edit
-			</button>
-			<button onClick={ () => {
-				//alert('Delete');
 				onDelete();
 			} }>Delete
 			</button>
@@ -64,16 +48,36 @@ const ViewIncompleteTodoItem = ({ todo, onDelete, setMode }) => {
 	)
 };
 
-const markTodo = (e) => {
-	console.log(e.target.checked);
+const ViewIncompleteTodoItem = ({ todo, onDelete, onEdit, setMode }) => {
 
+	return (
+		<Fragment>
+			<input type="checkbox" name="todoCompleted" onChange={ (e) => {
+				updateTodoState(e.target.value, todo, onEdit);
+			} }/>
+			<span>{ todo.description }{ ' ' }</span>
+			<button onClick={ () => {
+				setMode('EDIT');
+			} }>Edit
+			</button>
+			<button onClick={ () => {
+				onDelete();
+			} }>Delete
+			</button>
+		</Fragment>
+	)
 };
+
+const updateTodoState = (checked, todo, onEdit) => {
+	onEdit({ ...todo, state: checked ? 'COMPLETE' : ' INCOMPLETE' });
+};
+
 
 const Strike = (props) => {
 	return (
 		<Fragment>
-			<span style={ { color: 'red', textDecoration: 'line-through' } }>
-  			<span style={ { color: 'black' } }>{ props.children }</span>
+			<span style={ { color: ' red', textDecoration: ' line-through' } }>
+  			<span style={ { color: ' black' } }>{ props.children }</span>
 			</span>
 		</Fragment>
 	);
