@@ -1,41 +1,62 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 import * as PropTypes from 'prop-types';
+import EditTodoItem from "./EditTodoItem";
 
 
-const ViewTodoItem = ({ todo, onDelete }) => {
-		return (
+const ViewTodoItem = ({ todo, onDelete, onEdit }) => {
+	const [ mode, setMode ] = useState('VIEW');
+
+	return (
 		<Fragment>
-			{ isTodoCompleted(todo) ? <ViewCompleteTodoItem todo={ todo } onDelete={onDelete}/> : <ViewIncompleteTodoItem todo={ todo } onDelete={onDelete}/> }
+			{ mode === 'VIEW' ? showViewMode(todo, onDelete, setMode) : null }
+			{ mode === 'EDIT' ? showEditMode(todo, onEdit, setMode) : null }
 		</Fragment>
 	);
+};
+
+const showViewMode = (todo, onDelete, setMode) => {
+	if (isTodoCompleted(todo)) {
+		return <ViewCompleteTodoItem todo={ todo } onDelete={ onDelete }/>;
+	}
+	return <ViewIncompleteTodoItem todo={ todo } onDelete={ onDelete } setMode={ setMode }/>
 };
 
 const isTodoCompleted = (todo) => {
 	return todo.state === 'COMPLETE';
 };
 
+const showEditMode = (todo, onEdit, setMode) => {
+	return <EditTodoItem todo={ todo } onEdit={ (newTodo) => {
+		onEdit(newTodo);
+		setMode('VIEW');
+	} } onCancel={ () => {
+		setMode('VIEW');
+	} }/>
+};
+
 const ViewCompleteTodoItem = ({ todo, onDelete }) => {
 
 	return (
 		<Fragment>
-			<input type="checkbox" name="todoCompleted" onChange={ markTodo } checked={true} disabled={true}/>
-			<Strike>{todo.description}</Strike>
+			<input type="checkbox" name="todoCompleted" onChange={ markTodo } checked={ true } disabled={ true }/>
+			<Strike>{ todo.description }</Strike>
 		</Fragment>
 	)
 };
 
-const ViewIncompleteTodoItem = ({ todo, onDelete }) => {
+const ViewIncompleteTodoItem = ({ todo, onDelete, setMode }) => {
 
 	return (
 		<Fragment>
 			<input type="checkbox" name="todoCompleted" onChange={ markTodo }/>
 			<span>{ todo.description }{ ' ' }</span>
 			<button onClick={ () => {
-				alert('Edit');
+				//alert('Edit');
+				setMode('EDIT');
 			} }>Edit
 			</button>
 			<button onClick={ () => {
-				alert('Delete');
+				//alert('Delete');
 				onDelete();
 			} }>Delete
 			</button>
@@ -51,8 +72,8 @@ const markTodo = (e) => {
 const Strike = (props) => {
 	return (
 		<Fragment>
-			<span style={{color: 'red', textDecoration: 'line-through'}}>
-  			<span style={{color: 'black'}}>{ props.children }</span>
+			<span style={ { color: 'red', textDecoration: 'line-through' } }>
+  			<span style={ { color: 'black' } }>{ props.children }</span>
 			</span>
 		</Fragment>
 	);
