@@ -1,5 +1,5 @@
 import ViewTodoItem from "../components/ViewTodoItem";
-import { deleteTodo } from "../actions/todos";
+import { deleteTodo, editTodo } from "../actions/todos";
 const { connect } = require("react-redux");
 
 const mapStateToProps = (state, ownProps) => {
@@ -12,6 +12,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		onDelete: () => {
 			dispatch(deleteTodo(ownProps.todo.id, ownProps.index));
+		},
+		onEdit: (todo) => {
+			dispatch(editTodo(todo, ownProps.index));
 		}
 	};
 };
