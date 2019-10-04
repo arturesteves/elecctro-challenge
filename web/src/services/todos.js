@@ -30,10 +30,10 @@ export const addTodoItemRequest = async (todo) => {
 	return response;
 };
 
-export const editTodoItemRequest = async (todo, id) => {
+export const editTodoItemRequest = async (todo) => {
 	const [ error, response ] = await on(axios({
 		method: 'PATCH',
-		url: `${ baseURL }/todo/${ id }`,
+		url: `${ baseURL }/todo/${ todo.id }`,
 		data: todo
 	}));
 	if (error) {
