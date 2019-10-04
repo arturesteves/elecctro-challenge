@@ -19,7 +19,7 @@ const ViewCompleteTodoItem = ({ todo }) => {
 	return (
 		<Fragment>
 			<input type="checkbox" name="todoCompleted" onChange={ markTodo } checked={true} disabled={true}/>
-			<span>{todo.description}</span>
+			<Strike>{todo.description}</Strike>
 		</Fragment>
 	)
 };
@@ -45,6 +45,16 @@ const ViewIncompleteTodoItem = ({ todo }) => {
 const markTodo = (e) => {
 	console.log(e.target.checked);
 
+};
+
+const Strike = (props) => {
+	return (
+		<Fragment>
+			<span style={{color: 'red', textDecoration: 'line-through'}}>
+  			<span style={{color: 'black'}}>{ props.children }</span>
+			</span>
+		</Fragment>
+	);
 };
 
 ViewTodoItem.propTypes = {
