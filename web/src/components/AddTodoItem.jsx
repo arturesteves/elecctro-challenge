@@ -1,6 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { addTodo } from "../actions/todos";
 
 
 const AddTodoItem = (props) => {
@@ -8,7 +6,7 @@ const AddTodoItem = (props) => {
 		<div>
 			<form name="newTodoForm" onSubmit={ (e) => {
 				e.preventDefault();
-				onSubmit(e.target.todoDescription.value, props.dispatch)
+				onSubmit(e.target.todoDescription.value, props.onAdd)
 			} }>
 				<input type="text" name="todoDescription" placeholder="Write new task here" required={ true }/>
 				<button type="submit">Create</button>
@@ -17,12 +15,12 @@ const AddTodoItem = (props) => {
 	);
 };
 
-const onSubmit = (description, dispatch) => {
+const onSubmit = (description, onAdd) => {
 	console.log('Todo Description:', description);
 	const todo = {
 		description
 	};
-	dispatch(addTodo(todo));
+	onAdd(todo);
 	resetForm();
 };
 
@@ -31,4 +29,4 @@ const resetForm = () => {
 	form.reset();
 };
 
-export default connect()(AddTodoItem);
+export default AddTodoItem;
