@@ -40,21 +40,27 @@ export const fetchTodos = () => {
 };
 
 export const EDIT_TODO = 'EDIT_TODO';
+export const EDIT_TODO_FAILED = 'EDIT_TODO_FAILED';
 export const editTodoAction = (todo, index) => {
 	return {
 		type: EDIT_TODO,
-		todo,
-		index
 	}
 };
 export const editTodo = (todo, index) => {
 	return async (dispatch) => {
 		const result = await editTodoItemRequest(todo);
+		console.log('RESULT', result);
 		if (result.error) {
 			console.log('Edit Todo Request Failed');
+			dispatch(editTodoFailedAction());
 			return;
 		}
 		dispatch(editTodoAction(result.data, index));
+	}
+};
+export const editTodoFailedAction = () => {
+	return {
+		type: EDIT_TODO_FAILED
 	}
 };
 
@@ -64,11 +70,6 @@ export const deleteTodoAction = (id) => {
 	return {
 		type: DELETE_TODO,
 		id
-	}
-};
-export const deleteTodoFailedAction = () => {
-	return {
-		type: DELETE_TODO_FAILED
 	}
 };
 export const deleteTodo = (id, index) => {
@@ -82,4 +83,8 @@ export const deleteTodo = (id, index) => {
 		dispatch(deleteTodoAction(result.data, index));
 	}
 };
-
+export const deleteTodoFailedAction = () => {
+	return {
+		type: DELETE_TODO_FAILED
+	}
+};
