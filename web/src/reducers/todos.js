@@ -1,20 +1,7 @@
-import { ADD_TODO, EDIT_TODO, FETCH_TODOS } from "../actions/todos";
+import { ADD_TODO, DELETE_TODO, EDIT_TODO, FETCH_TODOS } from "../actions/todos";
 
 
-const initialState = [
-	{
-		id: 'asd',
-		state: 'INCOMPLETE',
-		description: 'asd',
-		dateAdded: ''
-	},
-	{
-		id: 'asdasd',
-		state: 'COMPLETE',
-		description: 'asdas123',
-		dateAdded: ''
-	},
-];
+const initialState = [];
 
 const todos = (state = initialState, action) => {
 	switch (action.type) {
@@ -23,16 +10,24 @@ const todos = (state = initialState, action) => {
 		case FETCH_TODOS:
 			return action.todos;
 		case EDIT_TODO:
-			let newState = [ ...state ];
-			newState[action.index] = { ...state[action.index], ...action.todo };
-			return newState;
+			return updateItem(state, action.todo, action.index);
 		case DELETE_TODO:
-			let newState = [ ...state ];
-			newState.splice(action.index, 1);
-			return newState;
+			return deleteItem(state, action.index);
 		default:
 			return state;
 	}
+};
+
+const deleteItem = (array, index) => {
+	let newArray = [ ...array ];
+	newArray.splice(index, 1);
+	return newArray;
+};
+
+const updateItem = (array, item, index) => {
+	let newArray = [ ...array ];
+	newArray[index] = { ...array[index], ...item };
+	return newArray;
 };
 
 export const selectTodos = state => state.todos;
