@@ -1,6 +1,8 @@
+import { withToastManager } from 'react-toast-notifications';
+import { connect } from 'react-redux';
 import ViewTodoItem from "../components/ViewTodoItem";
 import { deleteTodo, editTodo } from "../actions/todos";
-const { connect } = require("react-redux");
+
 
 const mapStateToProps = (state, ownProps) => {
 	return {
@@ -10,11 +12,14 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
-		onDelete: () => {
-			dispatch(deleteTodo(ownProps.todo.id, ownProps.index));
+		onDelete: (onSuccess, onFailure) => {
+			dispatch(deleteTodo(ownProps.todo.id, ownProps.index, onSuccess, onFailure));
 		},
-		onEdit: (todo) => {
-			dispatch(editTodo(todo, ownProps.index));
+		onEdit: (todo, onSuccess, onFailure) => {
+			dispatch(editTodo(todo, ownProps.index, onSuccess, onFailure));
+		},
+		displayNotification: (notification) => {
+			ownProps.toastManager.add(notification.message, notification.options);
 		}
 	};
 };
@@ -24,4 +29,4 @@ const connector = connect(
 	mapDispatchToProps
 );
 
-export default connector(ViewTodoItem);
+export default withToastManager(connector(ViewTodoItem));

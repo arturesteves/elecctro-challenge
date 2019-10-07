@@ -1,9 +1,8 @@
 import { withToastManager } from 'react-toast-notifications';
 import { addTodo } from "../actions/todos";
 import AddTodoItem from "../components/AddTodoItem";
+import { connect } from 'react-redux';
 
-
-const { connect } = require("react-redux");
 
 const mapStateToProps = (state, ownProps) => {
 	return {

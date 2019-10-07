@@ -49,15 +49,17 @@ export const editTodoAction = (todo, index) => {
 		index
 	}
 };
-export const editTodo = (todo, index) => {
+export const editTodo = (todo, index, onSuccess, onFailure) => {
 	return async (dispatch) => {
 		const result = await editTodoItemRequest(todo);
 		if (result.error) {
 			console.log('Edit Todo Request Failed');
 			dispatch(editTodoFailedAction());
+			onFailure();
 			return;
 		}
 		dispatch(editTodoAction(result.data, index));
+		onSuccess();
 	}
 };
 export const editTodoFailedAction = () => {
@@ -74,15 +76,17 @@ export const deleteTodoAction = (id) => {
 		id
 	}
 };
-export const deleteTodo = (id, index) => {
+export const deleteTodo = (id, index, onSuccess, onFailure) => {
 	return async (dispatch) => {
 		const result = await deleteTodoItemRequest(id);
 		if (result.error) {
 			console.log('Delete Todo Request Failed');
 			dispatch(deleteTodoFailedAction());
+			onFailure();
 			return;
 		}
 		dispatch(deleteTodoAction(result.data, index));
+		onSuccess();
 	}
 };
 export const deleteTodoFailedAction = () => {
