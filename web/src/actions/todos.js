@@ -8,14 +8,16 @@ const addTodoAction = (newTodo) => {
 		newTodo
 	};
 };
-export const addTodo = (todo) => {
+export const addTodo = (todo, onSuccess, onFailure) => {
 	return async (dispatch) => {
 		const result = await addTodoItemRequest(todo);
 		if (result.error) {
 			console.log('Add Todo Request Failed');
+			onFailure();
 			return;
 		}
 		dispatch(addTodoAction(result.data));
+		onSuccess();
 	}
 };
 

@@ -20,19 +20,35 @@ const onSubmit = (description, onAdd, displayNotification) => {
 	const todo = {
 		description
 	};
-	onAdd(todo);
-	displayNotification(
-		<p>
-			Your todo was created and saved &#128522;
-		</p>,
-		{
+	onAdd(todo, () => {
+		displayNotification(successNotification());
+	}, () => {
+		displayNotification(failureNotification());
+	});
+
+	resetForm();
+};
+
+const successNotification = () => {
+	return {
+		message: <p>Your todo was created and saved &#128522;</p>,
+		options: {
 			appearance: 'success',
 			autoDismissTimeout: 7000,
 			autoDismiss: true,
-			pauseOnHover: true
-		});
+		}
+	};
+};
 
-	resetForm();
+const failureNotification = () => {
+	return {
+		message: <p>You could not create you todo &#128522;</p>,
+		options: {
+			appearance: 'error',
+			autoDismissTimeout: 7000,
+			autoDismiss: true,
+		}
+	};
 };
 
 const resetForm = () => {

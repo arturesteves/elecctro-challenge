@@ -13,11 +13,11 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
-		onAdd: (todo) => {
-			dispatch(addTodo(todo));
+		onAdd: (todo, onSuccess, onFailure) => {
+			dispatch(addTodo(todo, onSuccess, onFailure));
 		},
-		displayNotification: (message, options) => {
-			ownProps.toastManager.add(message, options);
+		displayNotification: (notification) => {
+			ownProps.toastManager.add(notification.message, notification.options);
 		}
 	};
 };
