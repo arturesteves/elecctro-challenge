@@ -6,7 +6,7 @@ const AddTodoItem = (props) => {
 		<div>
 			<form name="newTodoForm" onSubmit={ (e) => {
 				e.preventDefault();
-				onSubmit(e.target.todoDescription.value, props.onAdd)
+				onSubmit(e.target.todoDescription.value, props.onAdd, props.displayNotification)
 			} }>
 				<input type="text" name="todoDescription" placeholder="Write new task here" required={ true }/>
 				<button type="submit">Create</button>
@@ -15,12 +15,23 @@ const AddTodoItem = (props) => {
 	);
 };
 
-const onSubmit = (description, onAdd) => {
+const onSubmit = (description, onAdd, displayNotification) => {
 	console.log('Todo Description:', description);
 	const todo = {
 		description
 	};
 	onAdd(todo);
+	displayNotification(
+		<p>
+			Your todo was created and saved &#128522;
+		</p>,
+		{
+			appearance: 'success',
+			autoDismissTimeout: 7000,
+			autoDismiss: true,
+			pauseOnHover: true
+		});
+
 	resetForm();
 };
 

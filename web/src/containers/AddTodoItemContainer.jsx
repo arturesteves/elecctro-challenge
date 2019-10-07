@@ -1,5 +1,8 @@
+import { withToastManager } from 'react-toast-notifications';
 import { addTodo } from "../actions/todos";
 import AddTodoItem from "../components/AddTodoItem";
+
+
 const { connect } = require("react-redux");
 
 const mapStateToProps = (state, ownProps) => {
@@ -12,6 +15,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 	return {
 		onAdd: (todo) => {
 			dispatch(addTodo(todo));
+		},
+		displayNotification: (message, options) => {
+			ownProps.toastManager.add(message, options);
 		}
 	};
 };
@@ -21,4 +27,4 @@ const connector = connect(
 	mapDispatchToProps
 );
 
-export default connector(AddTodoItem);
+export default withToastManager(connector(AddTodoItem));
