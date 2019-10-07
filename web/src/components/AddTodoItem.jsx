@@ -1,4 +1,7 @@
 import React from 'react';
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import AddIcon from '@material-ui/icons/Add';
 
 
 const AddTodoItem = (props) => {
@@ -8,8 +11,28 @@ const AddTodoItem = (props) => {
 				e.preventDefault();
 				onSubmit(e.target.todoDescription.value, props.onAdd, props.displayNotification)
 			} }>
-				<input type="text" name="todoDescription" placeholder="Write new task here" required={ true }/>
-				<button type="submit">Create</button>
+				<TextField
+					type="text"
+					name="todoDescription"
+					required={ true }
+					label="Todo Description"
+					//style={{ margin: 8 }}
+					placeholder="Save the World"
+					//helperText="Full width!"
+					fullWidth
+					margin="normal"
+					InputLabelProps={ {
+						shrink: true,
+					} }
+				/>
+				<Button
+					type="submit"
+					variant="contained"
+					color="primary"
+					startIcon={ <AddIcon/> }
+					size="small"
+				>Create
+				</Button>
 			</form>
 		</div>
 	);
