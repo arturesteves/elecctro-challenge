@@ -49,19 +49,31 @@ const showEditMode = (todo, onEdit, setMode, displayNotification) => {
 };
 
 const ViewCompleteTodoItem = ({ todo, onDelete, displayNotification }) => {
+	const labelId = `checkbox-list-label-${ todo.id }`;
 
 	return (
 		<Fragment>
-			<input type="checkbox" name="todoCompleted" checked={ true } disabled={ true }/>
-			<Strike>{ todo.description }</Strike>
-			<button onClick={ () => {
-				onDelete(() => {
-					displayNotification(successNotification(<p>Todo Deleted with Success</p>));
-				}, () => {
-					displayNotification(failureNotification(<p>We could not delete your Todo, Something happened</p>));
-				});
-			} }>Delete
-			</button>
+			<Checkbox
+				edge="start"
+				name="todoCompleted"
+				checked={true}
+				tabIndex={ -1 }
+				disableRipple
+				disabled={true}
+				inputProps={ { 'aria-labelledby': labelId } }
+			/>
+			<Strike>{todo.description }</Strike>
+			<ListItemSecondaryAction>
+				<IconButton edge="end" aria-label="delete" onClick={ () => {
+					onDelete(() => {
+						displayNotification(successNotification(<p>Todo Deleted with Success</p>));
+					}, () => {
+						displayNotification(failureNotification(<p>We could not delete your Todo, Something happened</p>));
+					});
+				} }>
+					<DeleteIcon color={ "secondary" }/>
+				</IconButton>
+			</ListItemSecondaryAction>
 		</Fragment>
 	)
 };
