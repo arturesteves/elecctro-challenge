@@ -16,9 +16,8 @@ const AddTodoItem = (props) => {
 					name="todoDescription"
 					required={ true }
 					label="Todo Description"
-					//style={{ margin: 8 }}
 					placeholder="Save the World"
-					//helperText="Full width!"
+					autoComplete={"off"}
 					fullWidth
 					margin="normal"
 					InputLabelProps={ {
