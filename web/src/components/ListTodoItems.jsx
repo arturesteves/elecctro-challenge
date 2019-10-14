@@ -41,21 +41,21 @@ const ListTodoItems = ({ todos }) => {
 				}) }
 			</ul>
 			<List >
-				{[0, 1, 2, 3].map(value => {
-					const labelId = `checkbox-list-label-${value}`;
+				{todos.map( (value, index) => {
+					const labelId = `checkbox-list-label-${value.id}`;
 
 					return (
-						<ListItem key={value} role={undefined} dense button onClick={handleToggle(value)}>
+						<ListItem key={index} role={undefined} dense button onClick={handleToggle(value.id)}>
 							<ListItemIcon>
 								<Checkbox
 									edge="start"
-									checked={checked.indexOf(value) !== -1}
+									checked={checked.indexOf(value.id) !== -1}
 									tabIndex={-1}
 									disableRipple
 									inputProps={{ 'aria-labelledby': labelId }}
 								/>
 							</ListItemIcon>
-							<ListItemText id={labelId} primary={`Line item ${value + 1}`} />
+							<ListItemText id={labelId} primary={value.description} />
 							<ListItemSecondaryAction>
 								<IconButton edge="end" aria-label="edit" onClick={() => {
 									alert('Clicked on Edit icon');
