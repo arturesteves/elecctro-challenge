@@ -9,16 +9,19 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
+import { Tooltip } from "@material-ui/core";
 
 
 const ViewTodoItem = ({ todo, onDelete, onEdit, displayNotification }) => {
 	const [ mode, setMode ] = useState('VIEW');
 
 	return (
-		<ListItem role={ undefined } dense button>
-			{ mode === 'VIEW' ? showViewMode(todo, onDelete, onEdit, setMode, displayNotification) : null }
-			{ mode === 'EDIT' ? showEditMode(todo, onEdit, setMode, displayNotification) : null }
-		</ListItem>
+		<Tooltip title={ `Created at ${ todo.dateAdded.toString() }` } placement="top">
+			<ListItem role={ undefined } dense button>
+				{ mode === 'VIEW' ? showViewMode(todo, onDelete, onEdit, setMode, displayNotification) : null }
+				{ mode === 'EDIT' ? showEditMode(todo, onEdit, setMode, displayNotification) : null }
+			</ListItem>
+		</Tooltip>
 	);
 };
 
@@ -56,13 +59,13 @@ const ViewCompleteTodoItem = ({ todo, onDelete, displayNotification }) => {
 			<Checkbox
 				edge="start"
 				name="todoCompleted"
-				checked={true}
+				checked={ true }
 				tabIndex={ -1 }
 				disableRipple
-				disabled={true}
+				disabled={ true }
 				inputProps={ { 'aria-labelledby': labelId } }
 			/>
-			<Strike>{todo.description }</Strike>
+			<Strike>{ todo.description }</Strike>
 			<ListItemSecondaryAction>
 				<IconButton edge="end" aria-label="delete" onClick={ () => {
 					onDelete(() => {
