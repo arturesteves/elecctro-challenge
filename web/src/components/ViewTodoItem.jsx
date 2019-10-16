@@ -38,7 +38,7 @@ const ViewTodoItem = ({ todo, onDelete, onEdit, displayNotification }) => {
 
 	return (
 		<Tooltip title={ `Created at ${ getDateTimeFormatted(todo.dateAdded) }` } placement="top">
-			<Paper className={ classes.root } elevation={ 10 }>
+			<Paper className={ classes.root } elevation={ 5 }>
 				<ListItem role={ undefined } dense button>
 					{ mode === 'VIEW' ? showViewMode(todo, onDelete, onEdit, setMode, displayNotification) : null }
 					{ mode === 'EDIT' ? showEditMode(todo, onEdit, setMode, displayNotification) : null }
