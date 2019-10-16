@@ -9,18 +9,41 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
-import { Tooltip } from "@material-ui/core";
+import { makeStyles, Tooltip } from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
+import { format, parseISO } from 'date-fns';
 
+
+const getDateTimeFormatted = (date) => {
+	const dateISO = parseISO(date);
+	let dateFormatted = '';
+	try {
+		dateFormatted = format(dateISO, 'dd/MM/yyyy - hh:mm:ss');
+	} catch (e) {
+		console.log(e);
+		console.log('can\'t format date');
+	}
+	return dateFormatted;
+};
+
+const useStyles = makeStyles(theme => ({
+	root: {
+		marginTop: "12px"
+	},
+}));
 
 const ViewTodoItem = ({ todo, onDelete, onEdit, displayNotification }) => {
+	const classes = useStyles();
 	const [ mode, setMode ] = useState('VIEW');
 
 	return (
-		<Tooltip title={ `Created at ${ todo.dateAdded.toString() }` } placement="top">
-			<ListItem role={ undefined } dense button>
-				{ mode === 'VIEW' ? showViewMode(todo, onDelete, onEdit, setMode, displayNotification) : null }
-				{ mode === 'EDIT' ? showEditMode(todo, onEdit, setMode, displayNotification) : null }
-			</ListItem>
+		<Tooltip title={ `Created at ${ getDateTimeFormatted(todo.dateAdded) }` } placement="top">
+			<Paper className={ classes.root } elevation={ 10 }>
+				<ListItem role={ undefined } dense button>
+					{ mode === 'VIEW' ? showViewMode(todo, onDelete, onEdit, setMode, displayNotification) : null }
+					{ mode === 'EDIT' ? showEditMode(todo, onEdit, setMode, displayNotification) : null }
+				</ListItem>
+			</Paper>
 		</Tooltip>
 	);
 };
