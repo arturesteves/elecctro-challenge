@@ -1,18 +1,19 @@
+import { fromJS } from 'immutable';
 import { ADD_TODO, DELETE_TODO, DELETE_TODO_FAILED, EDIT_TODO, EDIT_TODO_FAILED, FETCH_TODOS } from "../actions/todos";
 
 
-const initialState = [];
+const initialState = fromJS([]);
 
 const todos = (state = initialState, action) => {
 	switch (action.type) {
 		case ADD_TODO:
-			return [ ...state, action.newTodo ];
+			return fromJS([ ...state, action.newTodo ]);
 		case FETCH_TODOS:
-			return action.todos;
+			return fromJS(action.todos);
 		case EDIT_TODO:
-			return updateItem(state, action.todo, action.index);
+			return fromJS(updateItem(state, action.todo, action.index));
 		case DELETE_TODO:
-			return deleteItem(state, action.index);
+			return fromJS(deleteItem(state, action.index));
 		case EDIT_TODO_FAILED:
 		case DELETE_TODO_FAILED:
 		default:
@@ -32,6 +33,6 @@ const updateItem = (array, item, index) => {
 	return newArray;
 };
 
-export const selectTodos = state => state.todos;
+export const selectTodos = state => state.get('todos');
 
 export default todos;

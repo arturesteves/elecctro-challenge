@@ -20,7 +20,7 @@ const ListTodoItemsContainer = (props) => {
 
 const mapStateToProps = (state) => {
 	return {
-		todos: selectVisibleAndSortedTodoItems(state)
+		todos: selectVisibleAndSortedTodoItems(state).toJS()
 	};
 };
 

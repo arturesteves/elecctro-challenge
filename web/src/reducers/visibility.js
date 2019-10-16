@@ -1,35 +1,36 @@
+import { fromJS } from 'immutable';
 import { SET_VISIBILITY } from "../actions/visibility";
 import { createSelector } from "reselect";
 import { selectTodos } from "./todos";
 
 
-const initialState = {
+const initialState = fromJS({
 	visibility: 'ALL'
-};
+});
 
-const todos = (state = initialState, action) => {
+const visibility = (state = initialState, action) => {
 	switch (action.type) {
 		case SET_VISIBILITY:
-			return action.visibility;
+			return state.set('visibility', action.visibility);
 		default:
 			return state;
 	}
 };
 
-const selectVisibilityFilter = (state) => state.visibility;
+const selectVisibilityFilter = (state) => state.get('visibility').get('visibility');
+
 export const selectFilteredTodoList = createSelector(
 	selectTodos,
 	selectVisibilityFilter,
 	(todos, visibilityFilter) => {
 		switch (visibilityFilter) {
 			case "INCOMPLETE":
-				return todos.filter((todo) => todo.state === 'INCOMPLETE');
+				return todos.filter((todo) => todo.state === 'INCOMPLETE'); //todo.get('state')
 			case "ALL":
 			default:
 				return todos;
-
 		}
 	}
 );
 
-export default todos;
+export default visibility;
