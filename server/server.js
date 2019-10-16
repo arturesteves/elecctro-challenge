@@ -14,6 +14,7 @@ const server = Hapi.server({
 	}
 });
 
+
 const db = new Database(server);
 
 server.route(addItem(db));
@@ -23,6 +24,7 @@ server.route(deleteItem(db));
 
 const start = async function () {
 	try {
+		await registerPlugins();
 		await server.start();
 	} catch (err) {
 		console.log(err);
@@ -30,6 +32,30 @@ const start = async function () {
 	}
 
 	console.log(`Server running on ${ server.info.uri }`);
+};
+
+const registerPlugins = async () => {
+	await server.register({
+		plugin: require('@hapi/good'),
+		options: {
+			ops: {
+				interval: 15000 // interval to report server load
+			},
+			reporters: {
+				myConsoleReporter: [
+					{
+						module: '@hapi/good-squeeze',
+						name: 'Squeeze',
+						args: [{ log: '*', response: '*', ops: '*' }]
+					},
+					{
+						module: '@hapi/good-console'
+					},
+					'stdout'
+				]
+			}
+		}
+	});
 };
 
 start();
