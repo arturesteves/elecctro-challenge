@@ -6,10 +6,16 @@
   "dependencies": {
     "@hapi/catbox": "^10.2.3",
     "@hapi/catbox-memory": "^4.1.1",
+    "@hapi/good": "^8.2.4",
+    "@hapi/good-console": "^8.1.2",
+    "@hapi/good-squeeze": "^5.2.1",
     "@hapi/hapi": "^18.4.0",
-    "@hapi/joi": "^16.1.4"
+    "@hapi/joi": "^16.1.4",
+    "morgan": "^1.9.1"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "debug": "^4.1.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node server/server.js"
