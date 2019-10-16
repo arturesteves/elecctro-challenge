@@ -6,6 +6,8 @@ import List from "@material-ui/core/List";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
+import FilterListIcon from '@material-ui/icons/FilterListRounded';
+import IconButton from "@material-ui/core/IconButton";
 
 
 const useStyles = makeStyles(theme => ({
@@ -22,22 +24,30 @@ const ListTodoItems = ({ todos }) => {
 	const classes = useStyles();
 
 	return (
-		<div className={classes.container}>
-			<ClickableHeader>
-				<Typography component="div">
-					<Box fontSize="h5.fontSize" letterSpacing={ 6 } m={ 1 }>
-						Tasks
-					</Box>
-				</Typography>
-			</ClickableHeader>
-			{ todos.length === 0 ?
-				<span>No Todos Found</span> :
-				<List className={ classes.root } style={{padding: "15px", height: "100%", overflow: 'auto', scrollbarWidth: "none"}}>
-					{ todos.map((todo, index) => {
-						return <ViewTodoItemContainer key={ index } todo={ todo } index={ index }/>;
-					}) }
-				</List>
-			}
+		<div className={ classes.container }>
+			<div style={ { display: "inline-block" } }>
+				<ClickableHeader>
+					<IconButton color="primary">
+						<FilterListIcon/>
+					</IconButton>
+					<Typography component="div" style={ { display: 'inline-block' } }>
+						<Box fontSize="h5.fontSize" letterSpacing={ 6 } m={ 1 }>
+							Tasks
+						</Box>
+					</Typography>
+				</ClickableHeader>
+			</div>
+			<div>
+				{ todos.length === 0 ?
+					<span>No Todos Found</span> :
+					<List className={ classes.root }
+								style={ { padding: "15px", height: "100%", overflow: 'auto', scrollbarWidth: "none" } }>
+						{ todos.map((todo, index) => {
+							return <ViewTodoItemContainer key={ index } todo={ todo } index={ index }/>;
+						}) }
+					</List>
+				}
+			</div>
 		</div>
 	);
 };
