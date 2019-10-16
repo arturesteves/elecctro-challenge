@@ -4,6 +4,7 @@ import ListTodoItemsContainer from "../containers/ListTodoItemsContainer";
 import ControlTodoListItemsVisibility from "../containers/ControlTodoListItemsVisibility";
 import AddTodoItemContainer from "../containers/AddTodoItemContainer";
 import Header from "./Header";
+import Grid from "@material-ui/core/Grid";
 
 
 const style = {
@@ -19,8 +20,8 @@ const App = () => {
 			<div style={ { ...style.background } }>
 				<Header/>
 				<AddTodoItemContainer/>
-				<ListTodoItemsContainer/>
 				<ControlTodoListItemsVisibility/>
+				<ListTodoItemsContainer/>
 			</div>
 		</div>
 	);
