@@ -1,6 +1,6 @@
 import React from 'react';
 import ListTodoItemsContainer from "../containers/ListTodoItemsContainer";
-import ControlTodoListItemsVisibility from "../containers/ControlTodoListItemsVisibility";
+import ControlTodoListItemsVisibilityContainer from "../containers/ControlTodoListItemsVisibilityContainer";
 import AddTodoItemContainer from "../containers/AddTodoItemContainer";
 import Header from "./Header";
 
@@ -20,7 +20,7 @@ const App = () => {
 		<div style={ { ...style.background, ...style.container } }>
 			<Header/>
 			<AddTodoItemContainer/>
-			<ControlTodoListItemsVisibility/>
+			<ControlTodoListItemsVisibilityContainer/>
 			<ListTodoItemsContainer/>
 		</div>
 	);

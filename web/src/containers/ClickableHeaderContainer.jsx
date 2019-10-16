@@ -8,7 +8,7 @@ import {
 } from "../actions/sorting";
 
 
-const ClickableHeader = (props) => {
+const ClickableHeaderContainer = (props) => {
 	const [ numberOfClicks, setNumberOfClicks ] = useState(0);
 
 	return (
@@ -36,4 +36,4 @@ const sortTodoListItems = (dispatch, numberOfClicks, setNumberOfClicks) => {
 	}
 };
 
-export default connect()(ClickableHeader);
+export default connect()(ClickableHeaderContainer);

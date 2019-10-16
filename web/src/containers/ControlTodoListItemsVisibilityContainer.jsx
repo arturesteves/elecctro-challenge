@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-const ControlTodoListItemsVisibility = (props) => {
+const ControlTodoListItemsVisibilityContainer = (props) => {
 	const classes = useStyles();
 	const [ visibility, setVisibility ] = useState(false);
 
@@ -44,4 +44,4 @@ const changeTodoListItemsVisibility = (checked, dispatch) => {
 	dispatch(setTodosVisibility(visibility));
 };
 
-export default connect()(ControlTodoListItemsVisibility);
+export default connect()(ControlTodoListItemsVisibilityContainer);

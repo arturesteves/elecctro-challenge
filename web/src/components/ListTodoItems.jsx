@@ -1,6 +1,6 @@
 import React from 'react';
 import * as PropTypes from 'prop-types';
-import ClickableHeader from "../containers/ClickableHeader";
+import ClickableHeaderContainer from "../containers/ClickableHeaderContainer";
 import ViewTodoItemContainer from "../containers/ViewTodoItemContainer";
 import List from "@material-ui/core/List";
 import { makeStyles } from "@material-ui/core/styles";
@@ -26,7 +26,7 @@ const ListTodoItems = ({ todos }) => {
 	return (
 		<div className={ classes.container }>
 			<div style={ { display: "inline-block" } }>
-				<ClickableHeader>
+				<ClickableHeaderContainer>
 					<IconButton color="primary">
 						<FilterListIcon/>
 					</IconButton>
@@ -35,7 +35,7 @@ const ListTodoItems = ({ todos }) => {
 							Tasks
 						</Box>
 					</Typography>
-				</ClickableHeader>
+				</ClickableHeaderContainer>
 			</div>
 			<div>
 				{ todos.length === 0 ?
