@@ -33,7 +33,9 @@ const AddTodoItem = (props) => {
 	const classes = useStyles();
 	return (
 		<div>
-			<form name="newTodoForm" onSubmit={ (e) => {
+			<form name="newTodoForm" onInvalid={ (e) => {
+				e.target.setCustomValidity('Please, Add a Todo Description');
+			} } onSubmit={ (e) => {
 				e.preventDefault();
 				onSubmit(e.target.todoDescription.value, props.onAdd, props.displayNotification)
 			} }>
