@@ -13,13 +13,16 @@ const useStyles = makeStyles(theme => ({
 		width: "80%",
 		margin: "0 auto",
 	},
+	container: {
+		height: '500px'
+	}
 }));
 
 const ListTodoItems = ({ todos }) => {
 	const classes = useStyles();
 
 	return (
-		<div>
+		<div className={classes.container}>
 			<ClickableHeader>
 				<Typography component="div">
 					<Box fontSize="h5.fontSize" letterSpacing={ 6 } m={ 1 }>
@@ -29,7 +32,7 @@ const ListTodoItems = ({ todos }) => {
 			</ClickableHeader>
 			{ todos.length === 0 ?
 				<span>No Todos Found</span> :
-				<List className={ classes.root }>
+				<List className={ classes.root } style={{padding: "15px", height: "100%", overflow: 'auto', scrollbarWidth: "none"}}>
 					{ todos.map((todo, index) => {
 						return <ViewTodoItemContainer key={ index } todo={ todo } index={ index }/>;
 					}) }
