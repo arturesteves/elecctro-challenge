@@ -1,28 +1,27 @@
 import React from 'react';
-import '../App.css';
 import ListTodoItemsContainer from "../containers/ListTodoItemsContainer";
 import ControlTodoListItemsVisibility from "../containers/ControlTodoListItemsVisibility";
 import AddTodoItemContainer from "../containers/AddTodoItemContainer";
 import Header from "./Header";
-import Grid from "@material-ui/core/Grid";
 
 
 const style = {
 	background: {
 		height: "100vh",
 		background: "linear-gradient(31deg, rgba(148,195,225,1) 0%, rgba(255,255,255,1) 100%)"
+	},
+	container: {
+		textAlign: "center"
 	}
 };
 
 const App = () => {
 	return (
-		<div className="App">
-			<div style={ { ...style.background } }>
-				<Header/>
-				<AddTodoItemContainer/>
-				<ControlTodoListItemsVisibility/>
-				<ListTodoItemsContainer/>
-			</div>
+		<div style={ { ...style.background, ...style.container } }>
+			<Header/>
+			<AddTodoItemContainer/>
+			<ControlTodoListItemsVisibility/>
+			<ListTodoItemsContainer/>
 		</div>
 	);
 };
