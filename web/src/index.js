@@ -8,6 +8,8 @@ import './index.css';
 import App from './components/App';
 import reducers from './reducers';
 import * as serviceWorker from './serviceWorker';
+import { MuiThemeProvider } from '@material-ui/core/styles';
+import theme from './theme';
 
 
 const store = createStore(
@@ -15,12 +17,15 @@ const store = createStore(
 	applyMiddleware(ReduxThunk)
 );
 
+
 ReactDOM.render(
-	<ToastProvider>
-		<Provider store={ store }>
-			<App/>
-		</Provider>
-	</ToastProvider>,
+	<MuiThemeProvider theme={ theme }>
+		<ToastProvider>
+			<Provider store={ store }>
+				<App/>
+			</Provider>
+		</ToastProvider>
+	</MuiThemeProvider>,
 	document.getElementById('root')
 );
 
