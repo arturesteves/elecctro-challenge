@@ -20,20 +20,27 @@ const handler = async (request, h, db) => {
 			return errors;
 		}), request.payload);
 
+		request.server.log([ 'HTTP', 'Todo', 'Edit Item' ], `Payload: ${ JSON.stringify(payloadSchema) }`);
+
 		const schema = joinSchemas(queryStringSchema, payloadSchema);
 		if (schema.errors) {
+			request.server.log(['HTTP', 'Todo', 'Edit Item'], `Schema Validation Failed`);
 			return schema;
 		}
 
 		const todoItem = new TodoItem({ id: schema.id }, db);
 		const [ error, result ] = await on(todoItem.getInformationFromDB());
 		if (error) {
-			return h.response({ error: error.message }).code(404);
+			request.server.log([ 'HTTP', 'Todo', 'Edit Item' ],
+				`An Error Occurred while Editing an Item, ${ JSON.stringify(error) }`);
+			return h.response({ error: error.message }).code(500);
 		}
 		if (result == null) {
+			request.server.log([ 'HTTP', 'Todo', 'Edit Item' ], `Todo Item with id:${ schema.id } does not exist`);
 			return h.response('Todo Item Not Found').code(404);
 		}
 		if (todoItem.state === 'COMPLETE') {
+			request.server.log([ 'HTTP', 'Todo', 'Edit Item' ], `Todo Item with id:${ schema.id } is in state: Completed`);
 			return h.response('Todo Item Already Completed').code(400);
 		}
 
@@ -41,12 +48,12 @@ const handler = async (request, h, db) => {
 		todoItem.updatePropertyIfDefined("description", schema.description);
 
 		const newItem = await todoItem.update();
-		console.log('Todo Item updated');
+		request.server.log([ 'HTTP', 'Todo', 'Edit Item' ], `Todo Item with id: ${schema.id} Updated`);
 
 		return newItem;
 	} catch (e) {
-		console.log(e);
-		return e;
+		request.server.log(['HTTP', 'Todo', 'Edit Item'], `Something Went Wrong: ${JSON.stringify(e)}`);
+		return h.response({error: 'Something Went Wrong'}).code(500);
 	}
 };
 

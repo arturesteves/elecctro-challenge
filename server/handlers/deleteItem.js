@@ -8,29 +8,30 @@ const handler = async (request, h, db) => {
 			id: TodoItem.validations.id.required()
 		}), request.params);
 
+		request.server.log([ 'HTTP', 'Todo', 'Delete Item' ], `Payload: ${ JSON.stringify(schema) }`);
+
 		if (schema.errors) {
+			request.server.log([ 'HTTP', 'Todo', 'Add Item' ], `Schema Validation Failed`);
 			return { errors: schema.errors };
 		}
 
-		try {
-			const todoItem = new TodoItem({ id: schema.id }, db);
-			const [ error, result ] = await on(todoItem.delete());
-			if (error) {
-				return h.response({ error: error.message }).code(404);
-			}
-
-			if (result == null) {
-				return h.response('Todo Item Not Found').code(404);
-			}
-			return '';
-		} catch (e) {
-			console.log(e);
-			return e;
+		const todoItem = new TodoItem({ id: schema.id }, db);
+		const [ error, result ] = await on(todoItem.delete());
+		if (error) {
+			request.server.log([ 'HTTP', 'Todo', 'Delete Item' ],
+				`An Error Occurred while Deleting an Item, ${ JSON.stringify(error) }`);
+			return h.response({ error: error.message }).code(500);
 		}
 
+		if (result == null) {
+			request.server.log([ 'HTTP', 'Todo', 'Delete Item' ], `Todo Item with id:${ schema.id } does not exist`);
+			return h.response('Todo Item Not Found').code(404);
+		}
+		return '';
+
 	} catch (e) {
-		console.log(e);
-		return e;
+		request.server.log([ 'HTTP', 'Todo', 'Delete Item' ], `Something Went Wrong: ${ JSON.stringify(e) }`);
+		return h.response({ error: 'Something Went Wrong' }).code(500);
 	}
 };
 

@@ -8,7 +8,10 @@ const handler = async (request, h, db) => {
 			description: TodoItem.validations.description.required()
 		}), request.payload);
 
+		request.server.log([ 'HTTP', 'Todo', 'Add Item' ], `Payload: ${ JSON.stringify(schema) }`);
+
 		if (schema.errors) {
+			request.server.log([ 'HTTP', 'Todo', 'Add Item' ], `Schema Validation Failed`);
 			return { errors: schema.errors };
 		}
 
@@ -20,14 +23,16 @@ const handler = async (request, h, db) => {
 		const todoItem = new TodoItem(item, db);
 		const [ error, ] = await on(todoItem.add());
 		if (error) {
-			return h.response({ error: error.message }).code(404);
+			request.server.log([ 'HTTP', 'Todo', 'Add Item' ],
+				`An Error Occurred while Adding an Item, ${ JSON.stringify(error) }`);
+			return h.response({ error: error.message }).code(500);
 		}
-		console.log('Todo Item saved');
+		request.server.log([ 'HTTP', 'Todo', 'Add Item' ], 'Todo Item Saved');
 
 		return todoItem.toObject();
 	} catch (e) {
-		console.log(e);
-		return e;
+		request.server.log([ 'HTTP', 'Todo', 'Delete Item' ], `Something Went Wrong: ${ JSON.stringify(e) }`);
+		return h.response({ error: 'Something Went Wrong' }).code(500);
 	}
 };
 

@@ -9,13 +9,18 @@ const handler = async (request, h, db) => {
 			orderBy: TodoItem.validations.orderBy,
 		}), request.query);
 
+		request.server.log([ 'HTTP', 'Todo', 'List Items' ], `Payload: ${ JSON.stringify(schema) }`);
+
 		if (schema.errors) {
+			request.server.log([ 'HTTP', 'Todo', 'List Items' ], `Schema Validation Failed`);
 			return { errors: schema.errors };
 		}
 
 		const [ error, todoList ] = await on(TodoItem.getAll(db));
 		if (error) {
-			return h.response({ error: error.message }).code(404);
+			request.server.log([ 'HTTP', 'Todo', 'List Items' ],
+				`An Error Occurred while Listing the Items, ${ JSON.stringify(error) }`);
+			return h.response({ error: error.message }).code(500);
 		}
 
 		// filter
@@ -52,8 +57,8 @@ const handler = async (request, h, db) => {
 
 		return todoList;
 	} catch (e) {
-		console.log(e);
-		return e;
+		request.server.log([ 'HTTP', 'Todo', 'List Items' ], `Something Went Wrong: ${ JSON.stringify(e) }`);
+		return h.response({ error: 'Something Went Wrong' }).code(500);
 	}
 };
 

@@ -27,11 +27,11 @@ const start = async function () {
 		await registerPlugins();
 		await server.start();
 	} catch (err) {
-		console.log(err);
+		server.log(['ERROR'], JSON.stringify(err));
 		process.exit(1);
 	}
 
-	console.log(`Server running on ${ server.info.uri }`);
+	server.log([ 'START' ], `Server running on ${ server.info.uri }`);
 };
 
 const registerPlugins = async () => {
@@ -46,7 +46,7 @@ const registerPlugins = async () => {
 					{
 						module: '@hapi/good-squeeze',
 						name: 'Squeeze',
-						args: [{ log: '*', response: '*', ops: '*' }]
+						args: [ { log: '*', response: '*', ops: '*' } ]
 					},
 					{
 						module: '@hapi/good-console'
@@ -57,5 +57,10 @@ const registerPlugins = async () => {
 		}
 	});
 };
+
+server.ext('onRequest', function (request, reply) {
+	request.server.log([ 'HTTP', 'Todo' ], '--- New Request ---');
+	return reply.continue;
+});
 
 start();
