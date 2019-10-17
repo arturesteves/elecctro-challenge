@@ -70,10 +70,10 @@ export const editTodoFailedAction = () => {
 
 export const DELETE_TODO = 'DELETE_TODO';
 export const DELETE_TODO_FAILED = 'DELETE_TODO_FAILED';
-export const deleteTodoAction = (id) => {
+export const deleteTodoAction = (index) => {
 	return {
 		type: DELETE_TODO,
-		id
+		index
 	}
 };
 export const deleteTodo = (id, index, onSuccess, onFailure) => {
@@ -85,7 +85,7 @@ export const deleteTodo = (id, index, onSuccess, onFailure) => {
 			onFailure();
 			return;
 		}
-		dispatch(deleteTodoAction(result.data, index));
+		dispatch(deleteTodoAction(index));
 		onSuccess();
 	}
 };
