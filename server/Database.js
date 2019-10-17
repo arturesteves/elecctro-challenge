@@ -5,7 +5,7 @@ class Database {
 	constructor(server = null) {
 		this.nextTodoId = 1;
 		this.segment = 'todo_list';
-		this.itemTTL = 50000;
+		this.itemTTL = 3600000; // 1 hour
 		if (server == null) {
 			throw Error("Couldn't init Database - Missing Server Info");
 		}
