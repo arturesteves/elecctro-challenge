@@ -46,10 +46,11 @@ const registerPlugins = async () => {
 					{
 						module: '@hapi/good-squeeze',
 						name: 'Squeeze',
-						args: [ { log: '*', response: '*', ops: '*' } ]
+						args: [ { log: '*', response: '*', ops: '*', } ]
 					},
 					{
-						module: '@hapi/good-console'
+						module: '@hapi/good-console',
+						args: [ { format: 'YYYY-MM-DD/HH:mm:ss.SSS' } ]
 					},
 					'stdout'
 				]
@@ -57,7 +58,7 @@ const registerPlugins = async () => {
 		}
 	});
 
-	await server.register([require('@hapi/vision'), require('@hapi/inert'), require('lout')]);
+	await server.register([ require('@hapi/vision'), require('@hapi/inert'), require('lout') ]);
 };
 
 server.ext('onRequest', function (request, reply) {
