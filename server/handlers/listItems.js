@@ -13,7 +13,7 @@ const handler = async (request, h, db) => {
 
 		if (schema.errors) {
 			request.server.log([ 'HTTP', 'Todo', 'List Items' ], `Schema Validation Failed`);
-			return { errors: schema.errors };
+			return h.response({ errors: schema.errors }).code(400);
 		}
 
 		const [ error, todoList ] = await on(TodoItem.getAll(db));
@@ -57,7 +57,7 @@ const handler = async (request, h, db) => {
 
 		return todoList;
 	} catch (e) {
-		request.server.log([ 'HTTP', 'Todo', 'List Items' ], `Something Went Wrong: ${ JSON.stringify(e) }`);
+		request.server.log([ 'HTTP', 'Todo', 'List Items' ], `Something Went Wrong: ${ e.toString() }`);
 		return h.response({ error: 'Something Went Wrong' }).code(500);
 	}
 };
@@ -66,8 +66,43 @@ module.exports = (db) => {
 	return {
 		method: 'GET',
 		path: '/todos',
-		handler: async (request, h) => {
-			return handler(request, h, db);
+		options: {
+			handler: async (request, h) => {
+				return handler(request, h, db);
+			},
+			description: 'This route should list the to-do items on the list taking into account the conditions imposed on the query parameters.',
+			notes: 'The filter query parameter is optional and can be ‘ALL’, ‘COMPLETE’, or ‘INCOMPLETE’. If not specified, the default filter is ‘ALL’. ' +
+				'The orderBy query parameter is also optional and can be ‘DESCRIPTION’ or ‘DATE_ADDED’. If not specified, the default order is ‘DATE_ADDED’.',
+			validate: {
+				query: {
+					filter: {
+						type: 'string',
+						value: [ 'ALL', 'COMPLETE', 'INCOMPLETE' ],
+						required: false,
+					},
+					orderBy: {
+						type: 'string',
+						value: [ 'DESCRIPTION', 'DATE_ADDED', 'DATE_ADDED' ],
+						required: false
+					}
+				}
+			},
+			response: {
+				status: {
+					200: [ {
+						id: 'string',
+						state: 'string',
+						description: 'string',
+						dateAdded: 'datetime'
+					} ],
+					400: {
+						error: 'string'
+					},
+					500: {
+						error: [ 'string', 'Something Went Wrong' ]
+					}
+				}
+			}
 		}
 	}
 };

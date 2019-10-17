@@ -12,7 +12,7 @@ const handler = async (request, h, db) => {
 
 		if (schema.errors) {
 			request.server.log([ 'HTTP', 'Todo', 'Add Item' ], `Schema Validation Failed`);
-			return { errors: schema.errors };
+			return h.response({ errors: schema.errors }).code(400);
 		}
 
 		const todoItem = new TodoItem({ id: schema.id }, db);
@@ -30,7 +30,7 @@ const handler = async (request, h, db) => {
 		return '';
 
 	} catch (e) {
-		request.server.log([ 'HTTP', 'Todo', 'Delete Item' ], `Something Went Wrong: ${ JSON.stringify(e) }`);
+		request.server.log([ 'HTTP', 'Todo', 'Delete Item' ], `Something Went Wrong: ${ e.toString() }`);
 		return h.response({ error: 'Something Went Wrong' }).code(500);
 	}
 };
@@ -39,8 +39,27 @@ module.exports = (db) => {
 	return {
 		method: 'DELETE',
 		path: '/todo/{id}',
-		handler: async (request, h) => {
-			return handler(request, h, db);
+		options: {
+			handler: async (request, h) => {
+				return handler(request, h, db);
+			},
+			description: 'This route removes an item from the to-do list. The item will be referenced by id using the URL parameter id.',
+			validate: {
+				params: {
+					id: 'string'
+				},
+			},
+			response: {
+				status: {
+					200: {},
+					400: {
+						error: 'string'
+					},
+					500: {
+						error: [ 'string', 'Something Went Wrong' ]
+					}
+				}
+			}
 		}
 	}
 };

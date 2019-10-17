@@ -12,7 +12,7 @@ const handler = async (request, h, db) => {
 
 		if (schema.errors) {
 			request.server.log([ 'HTTP', 'Todo', 'Add Item' ], `Schema Validation Failed`);
-			return { errors: schema.errors };
+			return h.response({ errors: schema.errors }).code(400);
 		}
 
 		const item = {
@@ -31,7 +31,7 @@ const handler = async (request, h, db) => {
 
 		return todoItem.toObject();
 	} catch (e) {
-		request.server.log([ 'HTTP', 'Todo', 'Delete Item' ], `Something Went Wrong: ${ JSON.stringify(e) }`);
+		request.server.log([ 'HTTP', 'Todo', 'Delete Item' ], `Something Went Wrong: ${ e.toString() }`);
 		return h.response({ error: 'Something Went Wrong' }).code(500);
 	}
 };
@@ -40,8 +40,36 @@ module.exports = (db) => {
 	return {
 		method: 'PUT',
 		path: '/todos',
-		handler: async (request, h) => {
-			return handler(request, h, db);
+		options: {
+			handler: async (request, h) => {
+				return handler(request, h, db);
+			},
+			description: 'This route should add an item to the to-do list.',
+			notes: 'The expected request body should contain a single JSON object with the following field described in the payload.',
+			validate: {
+				payload: {
+					description: {
+						type: 'string',
+						required: true
+					}
+				},
+			},
+			response: {
+				status: {
+					200: {
+						id: 'string',
+						state: 'string',
+						description: 'string',
+						dateAdded: 'datetime'
+					},
+					400: {
+						error: 'string'
+					},
+					500: {
+						error: [ 'string', 'Something Went Wrong' ]
+					}
+				}
+			}
 		}
 	}
 };

@@ -24,8 +24,8 @@ const handler = async (request, h, db) => {
 
 		const schema = joinSchemas(queryStringSchema, payloadSchema);
 		if (schema.errors) {
-			request.server.log(['HTTP', 'Todo', 'Edit Item'], `Schema Validation Failed`);
-			return schema;
+			request.server.log([ 'HTTP', 'Todo', 'Edit Item' ], `Schema Validation Failed`);
+			return h.response(schema).code(400);
 		}
 
 		const todoItem = new TodoItem({ id: schema.id }, db);
@@ -48,12 +48,12 @@ const handler = async (request, h, db) => {
 		todoItem.updatePropertyIfDefined("description", schema.description);
 
 		const newItem = await todoItem.update();
-		request.server.log([ 'HTTP', 'Todo', 'Edit Item' ], `Todo Item with id: ${schema.id} Updated`);
+		request.server.log([ 'HTTP', 'Todo', 'Edit Item' ], `Todo Item with id: ${ schema.id } Updated`);
 
 		return newItem;
 	} catch (e) {
-		request.server.log(['HTTP', 'Todo', 'Edit Item'], `Something Went Wrong: ${JSON.stringify(e)}`);
-		return h.response({error: 'Something Went Wrong'}).code(500);
+		request.server.log([ 'HTTP', 'Todo', 'Edit Item' ], `Something Went Wrong: ${ e.toString() }`);
+		return h.response({ error: 'Something Went Wrong' }).code(500);
 	}
 };
 
@@ -61,8 +61,44 @@ module.exports = (db) => {
 	return {
 		method: 'PATCH',
 		path: '/todo/{id}',
-		handler: async (request, h) => {
-			return handler(request, h, db);
+		options: {
+			handler: async (request, h) => {
+				return handler(request, h, db);
+			},
+			description: 'This route should edit an item on the to-do list. The edited item will be referenced by id using the URL parameter id.',
+			notes: 'The expected request body should contain a single JSON object with a combination of the following fields described in the payload.',
+			validate: {
+				params: {
+					id: 'string'
+				},
+				payload: {
+					state: {
+						type: 'string',
+						value: [ 'COMPLETE', 'INCOMPLETE' ],
+						required: false
+					},
+					description: {
+						type: 'string',
+						required: false
+					}
+				}
+			},
+			response: {
+				status: {
+					200: {
+						id: 'string',
+						state: 'string',
+						description: 'string',
+						dateAdded: 'datetime'
+					},
+					400: {
+						error: 'string'
+					},
+					500: {
+						error: [ 'string', 'Something Went Wrong' ]
+					}
+				}
+			}
 		}
 	}
 };
