@@ -56,6 +56,8 @@ const registerPlugins = async () => {
 			}
 		}
 	});
+
+	await server.register([require('@hapi/vision'), require('@hapi/inert'), require('lout')]);
 };
 
 server.ext('onRequest', function (request, reply) {
