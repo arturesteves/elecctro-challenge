@@ -13,7 +13,7 @@ export const getTodoItemsRequest = async (filters = { state: 'ALL', orderBy: 'DA
 	}));
 	if (error) {
 		console.log('Add Todo Item Request Error:', error);
-		return error;
+		return { error };
 	}
 	return response;
 };
@@ -26,7 +26,7 @@ export const addTodoItemRequest = async (todo) => {
 	}));
 	if (error) {
 		console.log('Add Todo Item Request Error:', error);
-		return error;
+		return { error };
 	}
 	return response;
 };
@@ -39,7 +39,7 @@ export const editTodoItemRequest = async (todo) => {
 	}));
 	if (error) {
 		console.log('Edit Todo Item Request Error:', error);
-		return error;
+		return { error };
 	}
 	return response;
 };
