@@ -32,7 +32,7 @@ const handler = async (request, h, db) => {
 		const [ error, result ] = await on(todoItem.getInformationFromDB());
 		if (error) {
 			request.server.log([ 'HTTP', 'Todo', 'Edit Item' ],
-				`An Error Occurred while Editing an Item, ${ JSON.stringify(error) }`);
+				`An Error Occurred while Editing an Item, ${ error.toString() }`);
 			return h.response({ error: error.message }).code(500);
 		}
 		if (result == null) {
@@ -67,38 +67,6 @@ module.exports = (db) => {
 			},
 			description: 'This route should edit an item on the to-do list. The edited item will be referenced by id using the URL parameter id.',
 			notes: 'The expected request body should contain a single JSON object with a combination of the following fields described in the payload.',
-			validate: {
-				params: {
-					id: 'string'
-				},
-				payload: {
-					state: {
-						type: 'string',
-						value: [ 'COMPLETE', 'INCOMPLETE' ],
-						required: false
-					},
-					description: {
-						type: 'string',
-						required: false
-					}
-				}
-			},
-			response: {
-				status: {
-					200: {
-						id: 'string',
-						state: 'string',
-						description: 'string',
-						dateAdded: 'datetime'
-					},
-					400: {
-						error: 'string'
-					},
-					500: {
-						error: [ 'string', 'Something Went Wrong' ]
-					}
-				}
-			}
 		}
 	}
 };

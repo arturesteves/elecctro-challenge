@@ -19,7 +19,7 @@ const handler = async (request, h, db) => {
 		const [ error, todoList ] = await on(TodoItem.getAll(db));
 		if (error) {
 			request.server.log([ 'HTTP', 'Todo', 'List Items' ],
-				`An Error Occurred while Listing the Items, ${ JSON.stringify(error) }`);
+				`An Error Occurred while Listing the Items, ${ error.toString() }`);
 			return h.response({ error: error.message }).code(500);
 		}
 
@@ -73,36 +73,6 @@ module.exports = (db) => {
 			description: 'This route should list the to-do items on the list taking into account the conditions imposed on the query parameters.',
 			notes: 'The filter query parameter is optional and can be ‘ALL’, ‘COMPLETE’, or ‘INCOMPLETE’. If not specified, the default filter is ‘ALL’. ' +
 				'The orderBy query parameter is also optional and can be ‘DESCRIPTION’ or ‘DATE_ADDED’. If not specified, the default order is ‘DATE_ADDED’.',
-			validate: {
-				query: {
-					filter: {
-						type: 'string',
-						value: [ 'ALL', 'COMPLETE', 'INCOMPLETE' ],
-						required: false,
-					},
-					orderBy: {
-						type: 'string',
-						value: [ 'DESCRIPTION', 'DATE_ADDED', 'DATE_ADDED' ],
-						required: false
-					}
-				}
-			},
-			response: {
-				status: {
-					200: [ {
-						id: 'string',
-						state: 'string',
-						description: 'string',
-						dateAdded: 'datetime'
-					} ],
-					400: {
-						error: 'string'
-					},
-					500: {
-						error: [ 'string', 'Something Went Wrong' ]
-					}
-				}
-			}
 		}
 	}
 };

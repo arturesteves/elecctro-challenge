@@ -27,7 +27,7 @@ const start = async function () {
 		await registerPlugins();
 		await server.start();
 	} catch (err) {
-		server.log(['ERROR'], err.toString());
+		server.log([ 'ERROR' ], err.toString());
 		process.exit(1);
 	}
 

@@ -24,7 +24,7 @@ const handler = async (request, h, db) => {
 		const [ error, ] = await on(todoItem.add());
 		if (error) {
 			request.server.log([ 'HTTP', 'Todo', 'Add Item' ],
-				`An Error Occurred while Adding an Item, ${ JSON.stringify(error) }`);
+				`An Error Occurred while Adding an Item, ${ error.toString() }`);
 			return h.response({ error: error.message }).code(500);
 		}
 		request.server.log([ 'HTTP', 'Todo', 'Add Item' ], 'Todo Item Saved');
@@ -46,30 +46,6 @@ module.exports = (db) => {
 			},
 			description: 'This route should add an item to the to-do list.',
 			notes: 'The expected request body should contain a single JSON object with the following field described in the payload.',
-			validate: {
-				payload: {
-					description: {
-						type: 'string',
-						required: true
-					}
-				},
-			},
-			response: {
-				status: {
-					200: {
-						id: 'string',
-						state: 'string',
-						description: 'string',
-						dateAdded: 'datetime'
-					},
-					400: {
-						error: 'string'
-					},
-					500: {
-						error: [ 'string', 'Something Went Wrong' ]
-					}
-				}
-			}
 		}
 	}
 };

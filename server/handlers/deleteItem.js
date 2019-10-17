@@ -19,7 +19,7 @@ const handler = async (request, h, db) => {
 		const [ error, result ] = await on(todoItem.delete());
 		if (error) {
 			request.server.log([ 'HTTP', 'Todo', 'Delete Item' ],
-				`An Error Occurred while Deleting an Item, ${ JSON.stringify(error) }`);
+				`An Error Occurred while Deleting an Item, ${ error.toString() }`);
 			return h.response({ error: error.message }).code(500);
 		}
 
@@ -44,22 +44,6 @@ module.exports = (db) => {
 				return handler(request, h, db);
 			},
 			description: 'This route removes an item from the to-do list. The item will be referenced by id using the URL parameter id.',
-			validate: {
-				params: {
-					id: 'string'
-				},
-			},
-			response: {
-				status: {
-					200: {},
-					400: {
-						error: 'string'
-					},
-					500: {
-						error: [ 'string', 'Something Went Wrong' ]
-					}
-				}
-			}
 		}
 	}
 };
