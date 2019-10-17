@@ -33,6 +33,6 @@ const updateItem = (array, item, index) => {
 	return newArray;
 };
 
-export const selectTodos = state => state.get('todos');
+export const selectTodos = state => state.get('todos').toJS();
 
 export default todos;
