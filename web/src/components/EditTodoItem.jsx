@@ -26,9 +26,6 @@ const EditTodoItem = (props) => {
 					required
 					fullWidth
 					margin="normal"
-					InputLabelProps={ {
-						shrink: true,
-					} }
 					value={ description }
 					onChange={ (e) => {
 						setDescription(e.target.value);

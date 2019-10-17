@@ -49,10 +49,6 @@ const AddTodoItem = (props) => {
 						placeholder="Todo - Save the World"
 						autoComplete={ "off" }
 						fullWidth
-						margin="normal"
-						InputLabelProps={ {
-							shrink: true,
-						} }
 					/>
 					<Divider className={ classes.divider } orientation="vertical"/>
 					<IconButton type={ "submit" } color="primary" className={ classes.iconButton } aria-label="directions">
@@ -80,7 +76,7 @@ const onSubmit = (description, onAdd, displayNotification) => {
 
 const successNotification = () => {
 	return {
-		message: <p>Your todo was created and saved &#128522;</p>,
+		message: <p>Your todo was created and saved <span role="img" aria-label={"failure"}>&#128522;</span></p>,
 		options: {
 			appearance: 'success',
 			autoDismissTimeout: 7000,
@@ -91,7 +87,7 @@ const successNotification = () => {
 
 const failureNotification = () => {
 	return {
-		message: <p>You could not create you todo &#128522;</p>,
+		message: <p>You could not create you todo <span role="img" aria-label={"failure"}>&#128522;</span></p>,
 		options: {
 			appearance: 'error',
 			autoDismissTimeout: 7000,

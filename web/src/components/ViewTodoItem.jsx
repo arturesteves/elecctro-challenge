@@ -63,10 +63,10 @@ const isTodoCompleted = (todo) => {
 const showEditMode = (todo, onEdit, setMode, displayNotification) => {
 	return <EditTodoItem todo={ todo } onEdit={ (newTodo) => {
 		onEdit(newTodo, () => {
-			displayNotification(successNotification(<p>Your todo was updated with success &#128522;</p>));
+			displayNotification(successNotification(<p>Your todo was updated with success <span role="img" aria-label={"success"}>&#128522;</span></p>));
 		}, () => {
 			displayNotification(
-				failureNotification(<p>Something Happened and we could not update your todo &#128522;</p>));
+				failureNotification(<p>Something Happened and we could not update your todo <span role="img" aria-label={"failure"}>&#128522;</span></p>));
 		});
 		setMode('VIEW');
 	} } onCancel={ () => {
@@ -143,10 +143,10 @@ const ViewIncompleteTodoItem = ({ todo, onDelete, onEdit, setMode, displayNotifi
 
 const updateTodoState = (checked, todo, onEdit, displayNotification) => {
 	onEdit({ ...todo, state: checked ? 'COMPLETE' : ' INCOMPLETE' }, () => {
-		displayNotification(successNotification(<p>Your todo is now completed &#128522;</p>));
+		displayNotification(successNotification(<p>Your todo is now completed <span role="img" aria-label={"failure"}>&#128522;</span></p>));
 	}, () => {
 		displayNotification(
-			failureNotification(<p>Something Happened and we could not mark you todo as completed &#128522;</p>));
+			failureNotification(<p>Something Happened and we could not mark you todo as completed <span role="img" aria-label={"failure"}>&#128522;</span></p>));
 	});
 };
 
